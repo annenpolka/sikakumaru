@@ -7,9 +7,7 @@ name = "sikakumaru"
 version = "0.1.0"
 description = "資格試験対策のための自動問題生成システム"
 requires-python = ">=3.11"
-authors = [
-    {name = "しかくまるチーム"}
-]
+authors = [{ name = "しかくまるチーム" }]
 dependencies = [
     "fastapi>=0.100.0",
     "uvicorn>=0.23.0",
@@ -65,4 +63,4 @@ warn_unused_ignores = true
 [tool.pytest.ini_options]
 minversion = "7.0"
 testpaths = ["tests"]
-python_files = "test_*.py"
+python_files = ["test_*.py"]

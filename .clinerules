@@ -12,7 +12,7 @@ Rooは自身の判断を過信せず十分に検討し、積極的にユーザ�
 
 `git status` で現在のコンテキストを確認します。
 
-その後、logs/をroo-activity-loggerでsearch_logsを使って確認して、現在のタスクを特定します。
+その後、logs/をroo-activity-loggerでsearch_logsを使って確認して、現在のタスク状況を特定します。
 
 エラーハンドリングおよびブーメランタスクの項目を必ず実行してください。
 
