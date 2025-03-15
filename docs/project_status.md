@@ -59,8 +59,7 @@
 - **QuestionMetadata (dataclass)**: 問題のメタデータを表す値オブジェクト
   - difficulty: 問題の難易度
   - topics: 問題のトピックリスト
-  - certification: 対象資格名
-  - source: 問題の出典（オプショナル）
+  - certification: 対  - source: 問題の出典（オプショナル）
   - to_dict/from_dict メソッドで辞書形式への相互変換をサポート
 
 - **Question (dataclass)**: 問題エンティティ
