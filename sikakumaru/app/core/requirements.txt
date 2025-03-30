@@ -1,5 +1,0 @@
-# LLM問題生成エンジンの依存パッケージ
-openai>=1.3.0
-langchain>=0.0.300
-python-dotenv>=1.0.0
-tqdm>=4.65.0
