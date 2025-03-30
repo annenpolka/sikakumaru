@@ -78,7 +78,6 @@ nosetests.xml
 
 # ログ
 *.log
-logs/
 
 # ローカル設定
 .env.local
@@ -98,3 +97,6 @@ docker-compose.override.yml
 .history/
 tmp/
 temp/
+
+# Deno
+deno.lock
