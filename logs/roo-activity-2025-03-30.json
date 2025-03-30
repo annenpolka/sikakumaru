@@ -95,5 +95,60 @@
     "intention": "開発計画の PoC フェーズの最初のステップを完了し、CLI の入力部分の基礎を確立するため。",
     "context": "Boomerang モードが Code モードに委任した PoC のサブタスク (ステップ 2a) が完了した。",
     "parentId": "14188219-c572-4802-9b5b-1e958f2203ec"
+  },
+  {
+    "id": "d5322abd-87fd-439b-968a-195d616bbfa2",
+    "timestamp": "2025-03-30T10:51:56.529Z",
+    "type": "code_generation",
+    "level": "info",
+    "summary": "PoC ステップ 2b: プロンプト生成機能の実装完了 (TDD)",
+    "details": {
+      "completed_subtask": "ステップ 2b: プロンプトテンプレートの読み込みと基本的な置換",
+      "delegated_mode": "code",
+      "approach": "TDD (Red-Green-Refactor)",
+      "implementation_details": "プロンプトテンプレートを英語に翻訳し、src/prompt.ts 内にハードコード。引数埋め込みにはテンプレートリテラルを使用。generatePrompt 関数を実装。",
+      "created_files": [
+        "src/prompt.ts"
+      ],
+      "modified_files": [
+        "src/prompt.test.ts"
+      ],
+      "test_result": "src/prompt.test.ts の全 4 ケース、すべてパス",
+      "result_summary": "PoC のステップ 2b として、プロンプト生成機能の基本的な実装を TDD で完了しました。..."
+    },
+    "intention": "CLI 引数に基づいてプロンプト文字列を生成するコア機能の基礎を確立するため。",
+    "context": "Boomerang モードが Code モードに委任した PoC のサブタスク (ステップ 2b) が完了した。プロンプトはファイル読み込みではなくハードコードに変更された。",
+    "parentId": "50f314cc-79d5-49cb-9cd4-d2ea818a3e74"
+  },
+  {
+    "id": "f711fbac-ca7b-4ab5-b20c-7c27fe663423",
+    "timestamp": "2025-03-30T10:52:31.104Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指示により、PoC ステップ 2c の前に変更をコミット",
+    "details": {
+      "user_request": "ごめん、その前にコミットさせて",
+      "reason": "PoC ステップ 2b (プロンプト生成機能) の実装完了後、安定した状態で変更履歴を保存するため。",
+      "next_planned_step_before_commit": "PoC ステップ 2c: LLM API への接続と単純な応答取得"
+    },
+    "intention": "ユーザーの要求に従い、開発ワークフローの区切りとしてコミットを実行する。",
+    "context": "PoC ステップ 2b が完了し、ステップ 2c を Code モードに委任しようとしたが、ユーザーからコミットの要求があった。",
+    "parentId": "d5322abd-87fd-439b-968a-195d616bbfa2"
+  },
+  {
+    "id": "27d8ccb6-35af-48f1-b9ee-bfb8b70661fb",
+    "timestamp": "2025-03-30T10:53:24.849Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指示により、ログファイルもコミット対象に含める方針に変更",
+    "details": {
+      "user_request": "ログも残す",
+      "previous_plan": ".gitignore に logs/ を追加してログを除外する",
+      "new_plan": "ログファイルを含む現在の全ての変更をコミットする",
+      "reason": "ユーザーがログファイルもバージョン管理に含めることを希望したため。"
+    },
+    "intention": "ユーザーのプロジェクト管理方針に従い、コミット対象を変更する。",
+    "context": "Code モードに .gitignore 編集とコミットを指示したが、ユーザーからログもコミット対象に含めるよう指示があった。",
+    "parentId": "f711fbac-ca7b-4ab5-b20c-7c27fe663423"
   }
 ]

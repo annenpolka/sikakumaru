@@ -39,5 +39,28 @@
     "intention": "コードの構造を改善し、設計計画 (design-plan.md) に沿って型定義を一元管理するため。",
     "context": "cliffy を使用した CLI 引数解析の最小実装がテストをパスした後、コードの可読性と保守性を向上させるためにリファクタリングを実施した。",
     "parentId": "3498b18a-6d18-4596-950b-89cb7a879de6"
+  },
+  {
+    "id": "59b7f60e-d620-4aa7-8639-c1ac10959c06",
+    "timestamp": "2025-03-30T10:50:12.240Z",
+    "type": "code_generation",
+    "level": "info",
+    "summary": "PoC ステップ 2b: プロンプト生成機能 (テンプレートリテラル版) を TDD で実装",
+    "details": {
+      "task_step": "PoC Step 2b",
+      "user_feedback_ 반영": "プロンプトを外部ファイル読み込みからコード内ハードコード (英語) + テンプレートリテラル方式に変更",
+      "approach": "TDD (Red-Green-Refactor)",
+      "created_files": [
+        "src/prompt.ts"
+      ],
+      "modified_files": [
+        "src/prompt.test.ts"
+      ],
+      "implemented_function": "generatePrompt(options: CLIOptions): string in src/prompt.ts",
+      "test_result": "4 test cases in src/prompt.test.ts passed."
+    },
+    "intention": "PoC のステップ 2b を完了し、CLI 引数に基づいてプロンプト文字列を生成するコア機能を実装するため。",
+    "context": "ステップ 2a (引数解析) の完了後、ユーザーからのフィードバックを受けてプロンプト処理の実装方針を変更し、TDD で実装を進めた。",
+    "parentId": "50f314cc-79d5-49cb-9cd4-d2ea818a3e74"
   }
 ]
