@@ -2,14 +2,9 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { assert } from "@std/assert";
 import { loadSync } from "@std/dotenv";
 import { callLLM } from "./llm.ts"; // テスト対象の関数をインポート
-
-// モック用のインターフェース定義は不要
-
-// --- 実通信テスト (インテグレーションテスト) ---
 Deno.test({
   name: "[Integration] callLLM should return a response from actual Gemini API",
   fn: async () => {
-    // .env ファイルから環境変数をロード (テスト実行時のみ)
     try {
       loadSync({ export: true, allowEmptyValues: true, examplePath: null });
     } catch (e) {
@@ -29,8 +24,6 @@ Deno.test({
       );
       return;
     }
-
-    // 実際の ChatGoogleGenerativeAI インスタンスを作成
     const actualClient = new ChatGoogleGenerativeAI({
       apiKey: apiKey,
       model: "gemini-1.5-pro",
@@ -53,7 +46,6 @@ Deno.test({
       assert(false, `API call failed: ${errorMessage}`);
     }
   },
-  // API通信は時間がかかる可能性があるので、サニタイザーを無効化
   sanitizeOps: false,
   sanitizeResources: false,
 });

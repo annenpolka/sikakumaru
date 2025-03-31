@@ -828,5 +828,77 @@
     "intention": "ユーザー指示によるコミット作業の完了を確認し、プロジェクトの状態を記録するためよ。",
     "context": "Code モードが CLI テスト改善結果のコミットを実行し、完了を報告した直後だわ。",
     "parentId": "e4669240-4242-40ea-b841-6d662cc81278"
+  },
+  {
+    "id": "3997e9a5-e445-481b-a3ea-18cc37ee7c5e",
+    "timestamp": "2025-03-31T12:06:58.569Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指摘により、直前のコミットタスクは不要だったことを確認し、次のステップに進むことにしたわ。",
+    "details": {
+      "user_feedback": "もうコミットはしてもらったよ。次",
+      "reasoning": "直前のコミット (49f1f34) で CLI テスト改善の結果は記録済みだったため、再度コミットタスクを依頼する必要はなかったわ。",
+      "next_proposed_step": "コードの可読性向上 (不要コメント削除など)"
+    },
+    "intention": "ユーザーのフィードバックに基づき、重複したタスク依頼を取り下げ、次のリファクタリングステップを提案するためよ。",
+    "context": "Code モードへのコミットタスク依頼がユーザーによって拒否された直後よ。",
+    "parentId": "e4669240-4242-40ea-b841-6d662cc81278"
+  },
+  {
+    "id": "79dfef06-caba-4493-9404-fd3de647fcb3",
+    "timestamp": "2025-03-31T12:12:33.325Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Code モードによるコードクリーンナップ完了を確認したわ。",
+    "details": {
+      "subtask_result_summary": "Code モードが src/ 配下の TypeScript ファイルから不要なコメントやコードを削除し、テストパスを確認。",
+      "resolved_review_issues": [
+        "コードの可読性 (不要コメント等)"
+      ]
+    },
+    "intention": "委任したコードクリーンナップタスクの完了を確認し、リファクタリング作業の区切りとするためよ。",
+    "context": "Code モードがコードクリーンナップを完了し、結果を報告した直後だわ。",
+    "parentId": "f27766a6-5401-43a1-97cc-6a0cacebc740"
+  },
+  {
+    "id": "078c7958-5707-4057-b8d8-9bca55dfb178",
+    "timestamp": "2025-03-31T12:14:10.269Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指摘により、コードクリーンナップも既に完了していたと判断し、コミットに進むことにしたわ。",
+    "details": {
+      "user_feedback": "もうクリーンナップされた。コミットして",
+      "reasoning": "ユーザーがクリーンナップ完了を明言したため、私のタスク依頼は不要と判断したわ。",
+      "next_step": "git status で変更を確認し、コミットタスクを Code モードに依頼する。"
+    },
+    "intention": "ユーザーのフィードバックに基づき、重複したタスク依頼を取り下げ、指示通りコミット作業に進むためよ。",
+    "context": "Code モードへのクリーンナップタスク依頼がユーザーによって拒否された直後よ。",
+    "parentId": "f27766a6-5401-43a1-97cc-6a0cacebc740"
+  },
+  {
+    "id": "3faf4604-171b-45ee-886f-c53f86d80206",
+    "timestamp": "2025-03-31T12:14:31.082Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "git status コマンドを実行し、コードクリーンナップ後のコミット対象を確認したわ。",
+    "details": {
+      "command": "git status",
+      "output": "On branch main\nYour branch is up to date with 'origin/main'.\n\nChanges not staged for commit:\n  (use \"git add <file>...\" to update what will be committed)\n  (use \"git restore <file>...\" to discard changes in working directory)\n\tmodified:   logs/boomerang/roo-activity-2025-03-31.json\n\tmodified:   logs/code/roo-activity-2025-03-31.json\n\tmodified:   src/cli.ts\n\tmodified:   src/cli.unit.test.ts\n\tmodified:   src/llm.integration.test.ts\n\tmodified:   src/llm.ts\n\tmodified:   src/llm.unit.test.ts\n\tmodified:   src/prompt.ts\n\tmodified:   src/prompt.unit.test.ts\n\tmodified:   src/types.ts\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")",
+      "identified_changes": [
+        "modified: logs/boomerang/roo-activity-2025-03-31.json",
+        "modified: logs/code/roo-activity-2025-03-31.json",
+        "modified: src/cli.ts",
+        "modified: src/cli.unit.test.ts",
+        "modified: src/llm.integration.test.ts",
+        "modified: src/llm.ts",
+        "modified: src/llm.unit.test.ts",
+        "modified: src/prompt.ts",
+        "modified: src/prompt.unit.test.ts",
+        "modified: src/types.ts"
+      ]
+    },
+    "intention": "ユーザーの指示に基づき、コードクリーンナップの結果をコミットする準備として、対象ファイルを確認するためよ。",
+    "context": "コードクリーンナップ完了後、ユーザーからコミットの指示があった段階だわ。",
+    "parentId": "078c7958-5707-4057-b8d8-9bca55dfb178"
   }
 ]

@@ -1,7 +1,3 @@
-// src/types.ts
-
-// --- ドメイン固有の型エイリアス ---
-
 /** 資格試験の名称 */
 export type QualificationName = string;
 
@@ -13,9 +9,6 @@ export type PositiveInteger = number;
 
 /** ファイルパス */
 export type FilePath = string;
-
-// --- CLI オプション ---
-
 // design-plan.md とテストコードで定義したオプションに対応する型
 export interface CLIOptions {
   qualification?: QualificationName; // Optional
@@ -25,6 +18,3 @@ export interface CLIOptions {
   configPath: FilePath;
   templatePath: FilePath;
 }
-
-// --- その他の型定義 (将来用) ---
-// 今後、他の型定義 (AppConfig, ExamResultSet など) もここに追加していくことになるでしょうね。

@@ -4042,5 +4042,211 @@
     },
     "intention": "CLIテストの改善結果と関連する変更をGitリポジトリに記録するため。",
     "context": "ユーザーからの指示に基づき、src/cli.unit.test.ts のテスト網羅性向上と関連修正の結果をバージョン管理下に置く。"
+  },
+  {
+    "id": "6204e947-e060-45dc-9e3d-2647e8446689",
+    "timestamp": "2025-03-31T12:07:36.736Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "git status を実行してリポジトリの状態を確認",
+    "details": {
+      "command": "git status",
+      "output": "On branch main\nYour branch is up to date with 'origin/main'.\n\nChanges not staged for commit:\n  (use \"git add <file>...\" to update what will be committed)\n  (use \"git restore <file>...\" to discard changes in working directory)\n\tmodified:   logs/boomerang/roo-activity-2025-03-31.json\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")"
+    },
+    "intention": "作業開始前にリポジトリの変更状態を把握するため",
+    "context": "コードクリーンナップタスクの開始準備"
+  },
+  {
+    "id": "f62820df-c003-4f36-9f43-5b3c27631af8",
+    "timestamp": "2025-03-31T12:08:04.077Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ログを確認し、現在のタスクがコードクリーンナップであることを特定",
+    "details": {
+      "search_logs_result_summary": "Found 317 logs, latest related log ID 3997e9a5-e445-481b-a3ea-18cc37ee7c5e confirms next step is code cleanup.",
+      "identified_task": "コードクリーンナップ (不要コメント削除)",
+      "relevant_log_id": "3997e9a5-e445-481b-a3ea-18cc37ee7c5e"
+    },
+    "intention": "作業ログを確認し、現在のタスクコンテキストを明確にするため",
+    "context": "コードクリーンナップタスクの開始準備、git status 実行後",
+    "parentId": "6204e947-e060-45dc-9e3d-2647e8446689"
+  },
+  {
+    "id": "7091ffb0-b818-4bf5-9806-994507b7c9ed",
+    "timestamp": "2025-03-31T12:08:21.628Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/ ディレクトリ配下の TypeScript ファイルをリストアップ",
+    "details": {
+      "tool": "list_files",
+      "path": "src/",
+      "recursive": true,
+      "identified_files": [
+        "cli.ts",
+        "cli.unit.test.ts",
+        "llm.integration.test.ts",
+        "llm.ts",
+        "llm.unit.test.ts",
+        "prompt.ts",
+        "prompt.unit.test.ts",
+        "types.ts"
+      ]
+    },
+    "intention": "コードクリーンナップ対象のファイルを特定するため",
+    "context": "コードクリーンナップタスクの実行中",
+    "parentId": "f62820df-c003-4f36-9f43-5b3c27631af8"
+  },
+  {
+    "id": "ceb56a71-0586-4e67-a050-6c0ff570f098",
+    "timestamp": "2025-03-31T12:09:34.361Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/cli.unit.test.ts から不要なコメントを削除",
+    "details": {
+      "tool": "search_and_replace",
+      "file_path": "src/cli.unit.test.ts",
+      "operations_count": 18,
+      "outcome": "Success"
+    },
+    "intention": "コードの可読性を向上させるため、不要なコメントやコードを削除する",
+    "context": "コードクリーンナップタスクの実行中、src/cli.unit.test.ts の処理完了",
+    "parentId": "7091ffb0-b818-4bf5-9806-994507b7c9ed"
+  },
+  {
+    "id": "8e42eb75-9728-48d5-9b10-b4a37d851da9",
+    "timestamp": "2025-03-31T12:09:53.156Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/cli.ts から不要なコメントを削除",
+    "details": {
+      "tool": "search_and_replace",
+      "file_path": "src/cli.ts",
+      "operations_count": 5,
+      "outcome": "Success"
+    },
+    "intention": "コードの可読性を向上させるため、不要なコメントやコードを削除する",
+    "context": "コードクリーンナップタスクの実行中、src/cli.ts の処理完了",
+    "parentId": "ceb56a71-0586-4e67-a050-6c0ff570f098"
+  },
+  {
+    "id": "7feffd25-733c-4257-b1ef-065dc82c5316",
+    "timestamp": "2025-03-31T12:10:07.485Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/types.ts から不要なコメントを削除",
+    "details": {
+      "tool": "search_and_replace",
+      "file_path": "src/types.ts",
+      "operations_count": 5,
+      "outcome": "Success"
+    },
+    "intention": "コードの可読性を向上させるため、不要なコメントやコードを削除する",
+    "context": "コードクリーンナップタスクの実行中、src/types.ts の処理完了",
+    "parentId": "8e42eb75-9728-48d5-9b10-b4a37d851da9"
+  },
+  {
+    "id": "31c02938-4608-442d-bbf0-e6d64121d110",
+    "timestamp": "2025-03-31T12:10:20.910Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/prompt.unit.test.ts から不要なコメントを削除",
+    "details": {
+      "tool": "search_and_replace",
+      "file_path": "src/prompt.unit.test.ts",
+      "operations_count": 4,
+      "outcome": "Success"
+    },
+    "intention": "コードの可読性を向上させるため、不要なコメントやコードを削除する",
+    "context": "コードクリーンナップタスクの実行中、src/prompt.unit.test.ts の処理完了",
+    "parentId": "7feffd25-733c-4257-b1ef-065dc82c5316"
+  },
+  {
+    "id": "4cc5951a-95fb-4952-8e6f-8264b5c4e992",
+    "timestamp": "2025-03-31T12:10:35.211Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/llm.integration.test.ts から不要なコメントを削除",
+    "details": {
+      "tool": "search_and_replace",
+      "file_path": "src/llm.integration.test.ts",
+      "operations_count": 5,
+      "outcome": "Success"
+    },
+    "intention": "コードの可読性を向上させるため、不要なコメントやコードを削除する",
+    "context": "コードクリーンナップタスクの実行中、src/llm.integration.test.ts の処理完了",
+    "parentId": "31c02938-4608-442d-bbf0-e6d64121d110"
+  },
+  {
+    "id": "fa90a211-db57-4423-9a56-dffe70bf46f8",
+    "timestamp": "2025-03-31T12:10:53.030Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/prompt.ts から不要なコメントを削除",
+    "details": {
+      "tool": "search_and_replace",
+      "file_path": "src/prompt.ts",
+      "operations_count": 12,
+      "outcome": "Success"
+    },
+    "intention": "コードの可読性を向上させるため、不要なコメントやコードを削除する",
+    "context": "コードクリーンナップタスクの実行中、src/prompt.ts の処理完了",
+    "parentId": "4cc5951a-95fb-4952-8e6f-8264b5c4e992"
+  },
+  {
+    "id": "52a95872-dc8a-44ce-b0dd-f0579e6d7d15",
+    "timestamp": "2025-03-31T12:11:07.503Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/llm.unit.test.ts から不要なコメントを削除",
+    "details": {
+      "tool": "search_and_replace",
+      "file_path": "src/llm.unit.test.ts",
+      "operations_count": 9,
+      "outcome": "Success"
+    },
+    "intention": "コードの可読性を向上させるため、不要なコメントやコードを削除する",
+    "context": "コードクリーンナップタスクの実行中、src/llm.unit.test.ts の処理完了",
+    "parentId": "fa90a211-db57-4423-9a56-dffe70bf46f8"
+  },
+  {
+    "id": "bfd89370-6e92-4098-9eca-8599a0cba0e9",
+    "timestamp": "2025-03-31T12:11:35.559Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/llm.ts から不要なコメントとコードを削除",
+    "details": {
+      "tool": "search_and_replace",
+      "file_path": "src/llm.ts",
+      "operations_count": 26,
+      "outcome": "Success"
+    },
+    "intention": "コードの可読性を向上させるため、不要なコメントやコードを削除する",
+    "context": "コードクリーンナップタスクの実行中、src/llm.ts の処理完了",
+    "parentId": "52a95872-dc8a-44ce-b0dd-f0579e6d7d15"
+  },
+  {
+    "id": "a986ba95-ca3c-4b3c-979b-b81402cf4955",
+    "timestamp": "2025-03-31T12:12:02.038Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "deno task test を実行し、全テスト (ignore除く) のパスを確認",
+    "details": {
+      "command": "deno task test",
+      "exit_code": 0,
+      "output_summary": "ok | 5 passed (18 steps) | 0 failed | 0 ignored (2 steps) (244ms)"
+    },
+    "intention": "コードクリーンナップによる影響がないことを確認するため",
+    "context": "src/ 配下の全 TypeScript ファイルのクリーンナップ完了後",
+    "parentId": "bfd89370-6e92-4098-9eca-8599a0cba0e9",
+    "relatedIds": [
+      "ceb56a71-0586-4e67-a050-6c0ff570f098",
+      "8e42eb75-9728-48d5-9b10-b4a37d851da9",
+      "7feffd25-733c-4257-b1ef-065dc82c5316",
+      "31c02938-4608-442d-bbf0-e6d64121d110",
+      "4cc5951a-95fb-4952-8e6f-8264b5c4e992",
+      "fa90a211-db57-4423-9a56-dffe70bf46f8",
+      "52a95872-dc8a-44ce-b0dd-f0579e6d7d15",
+      "bfd89370-6e92-4098-9eca-8599a0cba0e9"
+    ]
   }
 ]

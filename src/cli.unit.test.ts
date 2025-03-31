@@ -1,15 +1,10 @@
-// src/cli.unit.test.ts (リファクタリング後, Deno.Command でヘルプテスト)
 import { assertEquals, assertStringIncludes, fail } from "jsr:@std/assert";
 import { describe, it } from "jsr:@std/testing/bdd";
-// @cliffy/testing は使わないので削除
 import { defineCommand } from "./cli.ts";
-
-// parseHelper はエラーテストでは使わなくなったが、正常系テストで使うので残す
 async function parseHelper(
   cmd: ReturnType<typeof defineCommand>,
   args: string[],
 ) {
-  // テスト実行時にプロセスが終了しないように noExit() を呼ぶ
   return await cmd.noExit().parse(args);
 }
 
@@ -87,7 +82,6 @@ describe("defineCommand", () => {
       const cmd = defineCommand();
       const args = baseArgs(optionName);
       try {
-        // parseHelper はエラーを throw するので try...catch で捕捉
         await parseHelper(cmd, args);
         fail(`エラーがスローされませんでした (${optionName} 欠落)`);
       } catch (error) {
@@ -183,15 +177,10 @@ describe("defineCommand", () => {
   });
 
   describe("ヘルプ/バージョン表示テスト", () => {
-    // Deno.Command を使ってサブプロセスとして実行し、stdout を検証する
     const runCli = async (args: string[]) => {
       const command = new Deno.Command(Deno.execPath(), {
         args: [
           "run",
-          // 必要な権限を付与 (main.ts の実装に依存する可能性あり)
-          // "--allow-read",
-          // "--allow-env",
-          // "--allow-net",
           "main.ts", // CLIのエントリポイント
           ...args,
         ],
@@ -225,20 +214,10 @@ describe("defineCommand", () => {
       assertStringIncludes(stdout, "Usage:");
       assertStringIncludes(stdout, "--qualification");
     });
-
-    // .version() が cli.ts でコメントアウトされているため、現状は失敗する可能性がある
     it.ignore("-V が指定された場合、バージョン情報が表示される", async () => {
-      // src/cli.ts の .version() のコメントアウトを解除し、バージョン文字列を設定する必要がある
-      // const { stdout, stderr, code } = await runCli(["-V"]);
-      // assertEquals(code, 0, `stderr: ${stderr}`);
-      // assertStringIncludes(stdout, "test-version"); // 設定したバージョン文字列を確認
     });
 
     it.ignore("--version が指定された場合、バージョン情報が表示される", async () => {
-      // src/cli.ts の .version() のコメントアウトを解除し、バージョン文字列を設定する必要がある
-      // const { stdout, stderr, code } = await runCli(["--version"]);
-      // assertEquals(code, 0, `stderr: ${stderr}`);
-      // assertStringIncludes(stdout, "test-version");
     });
   });
 
