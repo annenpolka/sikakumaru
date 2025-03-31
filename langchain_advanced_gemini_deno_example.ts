@@ -54,7 +54,7 @@ const addTool = new DynamicStructuredTool({
 // Geminiモデルを初期化
 const model = new ChatGoogleGenerativeAI({
   apiKey: apiKey,
-  model: "gemini-1.5-flash", // または "gemini-pro" など、利用可能なモデルを指定
+  model: "gemini-2.5-pro-exp-03-25", // または "gemini-pro" など、利用可能なモデルを指定
   temperature: 0.7,
 });
 
@@ -68,7 +68,9 @@ async function main() {
 
   try {
     // ユーザーからのメッセージ (ツール利用を促す内容)
-    const userMessage = new HumanMessage("5 と 8 を足すといくつになりますか？");
+    const userMessage = new HumanMessage(
+      "5993 と 82234 を足すといくつになりますか？",
+    );
     console.log(`\nユーザー: ${userMessage.content}`);
 
     // 1回目のモデル呼び出し (ツール呼び出しを期待)
