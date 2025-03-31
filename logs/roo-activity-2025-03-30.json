@@ -150,5 +150,27 @@
     "intention": "ユーザーのプロジェクト管理方針に従い、コミット対象を変更する。",
     "context": "Code モードに .gitignore 編集とコミットを指示したが、ユーザーからログもコミット対象に含めるよう指示があった。",
     "parentId": "f711fbac-ca7b-4ab5-b20c-7c27fe663423"
+  },
+  {
+    "id": "a8dd2929-1688-4faa-9d06-76fe02f457f2",
+    "timestamp": "2025-03-30T11:23:36.924Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指示により作業中断",
+    "details": {
+      "reason": "ユーザーからの作業中断指示",
+      "current_status": "概念実証（PoC）フェーズのステップ 2c（LLM API への接続）を開始しようとした直後に中断。",
+      "completed_steps": [
+        "要件定義と設計 (design-plan.md)",
+        "PoC ステップ 2a: CLI 引数解析 (src/cli.ts, src/cli.test.ts, src/types.ts)",
+        "PoC ステップ 2b: プロンプト生成 (src/prompt.ts, src/prompt.test.ts)",
+        "ステップ 2b までのコミット (ログファイル含む)"
+      ],
+      "next_step_when_resumed": "PoC ステップ 2c: LLM API 接続の実装 (TDD)",
+      "last_log_id": "e0a57771-5a1b-4324-b008-7cb849408150"
+    },
+    "intention": "ユーザーの指示に従い、作業を安全に中断し、再開可能なように現状を記録する。",
+    "context": "PoC ステップ 2c の new_task がユーザーによってキャンセルされた直後。",
+    "parentId": "e0a57771-5a1b-4324-b008-7cb849408150"
   }
 ]
