@@ -5,7 +5,7 @@ snapshot[`generatePrompt snapshot test - Basic 1`] = `
 You are an expert exam question creation assistant specializing in the specified qualification field. Generate clear, high-quality exam questions based on educational principles.
 
 # Basic Instructions
-Create a question set for the 応用情報技術者試験 exam according to the following requirements.
+以下の要件に従い、応用情報技術者試験 試験の問題セットを**日本語で**作成してください。
 
 ## 1. Scope and Focus Areas
 *   **Qualification Name:** 応用情報技術者試験*   **Fields:** テクノロジ, マネジメント*   **Scope:** Based on the following domains and ratios:
@@ -134,7 +134,7 @@ snapshot[`generatePrompt snapshot test - Defaults 1`] = `
 You are an expert exam question creation assistant specializing in the specified qualification field. Generate clear, high-quality exam questions based on educational principles.
 
 # Basic Instructions
-Create a question set for the [Not Specified] exam according to the following requirements.
+以下の要件に従い、[Not Specified] 試験の問題セットを**日本語で**作成してください。
 
 ## 1. Scope and Focus Areas
 *   **Qualification Name:** [Not Specified]*   **Fields:** [Not Specified]*   **Scope:** Based on the following domains and ratios:
@@ -263,7 +263,7 @@ snapshot[`generatePrompt snapshot test - Empty Fields 1`] = `
 You are an expert exam question creation assistant specializing in the specified qualification field. Generate clear, high-quality exam questions based on educational principles.
 
 # Basic Instructions
-Create a question set for the 基本情報技術者試験 exam according to the following requirements.
+以下の要件に従い、基本情報技術者試験 試験の問題セットを**日本語で**作成してください。
 
 ## 1. Scope and Focus Areas
 *   **Qualification Name:** 基本情報技術者試験*   **Fields:** [Not Specified]*   **Scope:** Based on the following domains and ratios:

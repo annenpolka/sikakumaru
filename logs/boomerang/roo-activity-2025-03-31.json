@@ -1099,5 +1099,104 @@
     "relatedIds": [
       "c0033b41-7a6d-43e1-9f29-8317f408a2ba"
     ]
+  },
+  {
+    "id": "0e2f618b-e9ef-4462-852a-78b2ab744cd3",
+    "timestamp": "2025-03-31T13:41:13.465Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "作業開始準備",
+    "intention": "ユーザー指示に基づき作業を開始する",
+    "context": "新規タスク「LangChainの言語指定方法調査」の開始"
+  },
+  {
+    "id": "ec268aeb-182d-4f6b-9d9c-cc06e5294097",
+    "timestamp": "2025-03-31T13:41:23.694Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "git statusの実行準備",
+    "intention": "ユーザー指示に基づき、リポジトリの現状を確認する",
+    "context": "作業開始準備の一環",
+    "parentId": "0e2f618b-e9ef-4462-852a-78b2ab744cd3"
+  },
+  {
+    "id": "b85e581d-4b58-4b92-bea7-fab450ba2d0f",
+    "timestamp": "2025-03-31T13:41:38.966Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "git status 実行完了",
+    "details": {
+      "command": "git status",
+      "exit_code": 0,
+      "output": "On branch main\nYour branch is up to date with 'origin/main'.\n\nChanges not staged for commit:\n  (use \"git add <file>...\" to update what will be committed)\n  (use \"git restore <file>...\" to discard changes in working directory)\n\tmodified:   logs/boomerang/roo-activity-2025-03-31.json\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")\n"
+    },
+    "intention": "リポジトリの状態を確認し、ログ記録による変更であることを把握する",
+    "context": "作業開始準備の一環",
+    "parentId": "ec268aeb-182d-4f6b-9d9c-cc06e5294097"
+  },
+  {
+    "id": "a23ca61e-2a5c-4f4f-91dd-78ad71fb5f51",
+    "timestamp": "2025-03-31T13:41:55.651Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Askモードへのタスク委任決定",
+    "details": {
+      "task": "LangChainでレスポンスの言語を指定する方法の調査",
+      "delegated_mode": "ask",
+      "reason": "技術的な調査依頼であり、Askモードの専門性に合致するため。"
+    },
+    "intention": "ユーザーの要求に基づき、最適なモードにタスクを委任する",
+    "context": "作業開始準備完了後、タスク実行フェーズへの移行",
+    "parentId": "b85e581d-4b58-4b92-bea7-fab450ba2d0f"
+  },
+  {
+    "id": "58ff3774-22bd-4a2c-be6b-795d74ee9fa0",
+    "timestamp": "2025-03-31T13:48:34.630Z",
+    "type": "conversation",
+    "level": "info",
+    "summary": "Askモードからのタスク完了報告受領",
+    "details": {
+      "mode": "ask",
+      "task_summary": "LangChainのレスポンス言語指定方法の調査",
+      "result_summary": "LangChain.jsには専用機能はなく、プロンプトエンジニアリング（System Message等）が一般的。コード例と注意点を提示。",
+      "raw_result": "Task complete: LangChain.jsでLLMのレスポンス言語を指定する方法について調査しました。\n\n**主な方法:**\n\n*   公式ドキュメント (`/docs/how_to/` など) を調査しましたが、レスポンス言語を直接指定する専用の機能やパラメータは見つかりませんでした。\n*   最も一般的で確実な方法は**プロンプトエンジニアリング**であると考えられます。具体的には、プロンプト内に「日本語で応答してください」といった明確な指示を含める方法や、Chat ModelのSystem Messageで言語を指定する方法があります。\n\n**コード例:**\n\n*   System Message を使用する例 (TypeScript):\n    ```typescript\n    import { ChatOpenAI } from \"@langchain/openai\";\n    import { HumanMessage, SystemMessage } from \"@langchain/core/messages\";\n\n    const chat = new ChatOpenAI({ modelName: \"gpt-4\" }); // ご利用のモデルに合わせてください\n\n    const response = await chat.invoke([\n      new SystemMessage(\"あなたは常に日本語で応答する、役に立つアシスタントです。\"),\n      new HumanMessage(\"LangChainとは何ですか？\"),\n    ]);\n\n    console.log(response.content); // 日本語での応答が期待されます\n    ```\n\n**注意点:**\n\n*   プロンプトによる指示は絶対ではなく、モデルによっては従わない可能性もあります。\n*   言語指定の成功は、使用するLLMモデルの能力に依存します。\n*   LangChain自体に言語指定専用のパラメータは現状見当たりませんでした。\n\nこの調査結果が、あなたの目的に沿うものであれば幸いですわ。"
+    },
+    "intention": "委任したサブタスクの結果を受け取り、全体のタスク進行状況を更新する",
+    "context": "Askモードによる調査タスクの完了",
+    "parentId": "a23ca61e-2a5c-4f4f-91dd-78ad71fb5f51"
+  },
+  {
+    "id": "b5f9ff70-0ace-4d45-8ef8-06e8605ef9ac",
+    "timestamp": "2025-03-31T13:49:15.779Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Codeモードへのタスク委任決定 (プロンプトテンプレート修正)",
+    "details": {
+      "task": "プロンプトテンプレートに言語指定を追加する",
+      "delegated_mode": "code",
+      "reason": "ユーザーフィードバックに基づき、コード変更が必要なため。",
+      "previous_task_context": {
+        "ask_mode_result": "LangChain.jsには言語指定の専用機能はなく、プロンプトエンジニアリング（System Messageやプロンプト内指示）が一般的であるとの調査結果。"
+      }
+    },
+    "intention": "ユーザーのフィードバックに基づき、調査結果を具体的なコード変更に反映させるため、適切なモードにタスクを委任する",
+    "context": "Askモードによる調査完了後、ユーザーからの追加指示を受けて",
+    "parentId": "58ff3774-22bd-4a2c-be6b-795d74ee9fa0"
+  },
+  {
+    "id": "a70f9c89-e7ec-4d87-9bab-384087a9906d",
+    "timestamp": "2025-03-31T14:02:08.092Z",
+    "type": "conversation",
+    "level": "info",
+    "summary": "Codeモードからのタスク完了報告受領 (プロンプトテンプレート修正)",
+    "details": {
+      "mode": "code",
+      "task_summary": "プロンプトテンプレートへの言語指定追加",
+      "result_summary": "`templates/exam-prompt.eta` に日本語指定を追加、`src/prompt.ts` は修正不要、`src/prompt.unit.test.ts` のスナップショット更新、`deno.json` にテスト更新タスク追加。",
+      "raw_result": "Task complete: プロンプトテンプレートへの言語指定追加、および関連するテストと設定ファイルの更新作業が完了しました。\n\n**実施した主な作業:**\n\n1.  **`templates/exam-prompt.eta` の修正:**\n    *   5行目の指示文を英語から日本語に変更し、「**日本語で**」という言語指定を追加しました。\n    ```diff\n    - Create a question set for the <%= it.qualificationName %> exam according to the following requirements.\n    + 以下の要件に従い、<%= it.qualificationName %> 試験の問題セットを**日本語で**作成してください。\n    ```\n2.  **`src/prompt.ts` の確認:**\n    *   テンプレート変数の変更はなかったため、このファイルへの修正は不要でした。\n3.  **`src/prompt.unit.test.ts` のスナップショット更新:**\n    *   テンプレート変更により失敗するスナップショットテストを確認し、`deno test -A src/prompt.unit.test.ts -- --update` コマンドで正常に更新しました。\n4.  **`deno.json` へのタスク追加:**\n    *   スナップショット更新を容易にするため、以下のタスクを `tasks` オブジェクトに追加しました。\n    ```json\n    \"test:snapshot:update\": \"deno test -A src/**/*.unit.test.ts -- --update\"\n    ```\n    （途中で JSON 構文エラーがありましたが、`write_to_file` で修正済みです。）\n\nこれで、プロンプトは日本語で出力されるようになり、関連するテストも更新され、今後のスナップショット更新も `deno task test:snapshot:update` コマンドで簡単に行えるようになったはずよ。"
+    },
+    "intention": "委任したサブタスクの結果を受け取り、全体のタスク進行状況を更新する",
+    "context": "Codeモードによるプロンプトテンプレート修正タスクの完了",
+    "parentId": "b5f9ff70-0ace-4d45-8ef8-06e8605ef9ac"
   }
 ]

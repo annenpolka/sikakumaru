@@ -4374,5 +4374,282 @@
     },
     "intention": "ユーザーの指示に基づき、PoC 機能統合の変更をバージョン管理下に置くため。",
     "context": "前のタスクで完了した PoC 機能統合 (main.ts への統合、.env の API キー名統一) を反映させる一連の Git コミット作業。"
+  },
+  {
+    "id": "5fe2b8d7-50a7-452d-b783-577ff846688a",
+    "timestamp": "2025-03-31T13:50:09.436Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "プロンプトテンプレートへの言語指定追加タスクを開始",
+    "details": {
+      "task_description": "templates/exam-prompt.eta に日本語での出力指示を追加し、src/prompt.ts への影響を確認・修正する。",
+      "target_files": [
+        "templates/exam-prompt.eta",
+        "src/prompt.ts"
+      ],
+      "constraints": "スコープ外の変更は行わない。既存構造を尊重する。"
+    },
+    "intention": "ユーザーの指示に基づき、LLM のレスポンス言語を制御するためのプロンプト修正作業を開始するため。",
+    "context": "Askモードでの調査結果を受け、プロンプトエンジニアリングによる言語指定が有効と判断されたため。"
+  },
+  {
+    "id": "22df5b2a-b5de-4393-ae74-7c6b5d09d88c",
+    "timestamp": "2025-03-31T13:50:35.440Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "templates/exam-prompt.eta に日本語での出力指示を追加",
+    "details": {
+      "tool": "apply_diff",
+      "file_path": "templates/exam-prompt.eta",
+      "change_summary": "5行目の指示文を英語から日本語に変更し、「日本語で」という言語指定を追加した。",
+      "diff_applied": "@@ ... @@\n \n # Basic Instructions\n-Create a question set for the <%= it.qualificationName %> exam according to the following requirements.\n+以下の要件に従い、<%= it.qualificationName %> 試験の問題セットを**日本語で**作成してください。\n \n ## 1. Scope and Focus Areas\n *   **Qualification Name:** <%= it.qualificationName %>"
+    },
+    "intention": "LLMに対して、生成する試験問題の言語を明確に日本語に指定するため。",
+    "context": "プロンプトテンプレートへの言語指定追加タスクの一環。",
+    "parentId": "5fe2b8d7-50a7-452d-b783-577ff846688a"
+  },
+  {
+    "id": "2516ef28-f4a3-4c59-8931-cd32ed5c613c",
+    "timestamp": "2025-03-31T13:50:51.414Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "src/prompt.ts は修正不要と判断",
+    "details": {
+      "file_path": "src/prompt.ts",
+      "analysis": "templates/exam-prompt.eta の変更は静的テキスト部分のみであり、src/prompt.ts が使用するテンプレート変数には影響しないため、修正は不要と判断した。",
+      "checked_variables": [
+        "qualificationName",
+        "fieldsString",
+        "numberOfQuestions"
+      ]
+    },
+    "intention": "templates/exam-prompt.eta の変更が関連コードに影響を与えないことを確認するため。",
+    "context": "プロンプトテンプレートへの言語指定追加タスクの一環。",
+    "parentId": "5fe2b8d7-50a7-452d-b783-577ff846688a",
+    "relatedIds": [
+      "22df5b2a-b5de-4393-ae74-7c6b5d09d88c"
+    ]
+  },
+  {
+    "id": "0ae82da5-0d58-4399-8a3e-a7759172b14d",
+    "timestamp": "2025-03-31T13:56:43.327Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザーフィードバックに基づき、テストコードの確認を追加",
+    "details": {
+      "feedback": "テストコードを確認して",
+      "reasoning": "src/prompt.ts の生成結果が変わるため、関連するテストコード (src/prompt.unit.test.ts) への影響を確認する必要があると判断した。",
+      "next_step": "src/prompt.unit.test.ts の内容を確認する。"
+    },
+    "intention": "ユーザーのフィードバックを反映し、変更の影響範囲をより正確に把握・対応するため。",
+    "context": "プロンプトテンプレートへの言語指定追加タスクの完了報告後、ユーザーからテストコード確認の指示を受けた。",
+    "parentId": "5fe2b8d7-50a7-452d-b783-577ff846688a",
+    "relatedIds": [
+      "22df5b2a-b5de-4393-ae74-7c6b5d09d88c",
+      "2516ef28-f4a3-4c59-8931-cd32ed5c613c"
+    ]
+  },
+  {
+    "id": "73ccc99b-8c44-4955-910a-903c3622a54c",
+    "timestamp": "2025-03-31T13:56:57.507Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "src/prompt.unit.test.ts にスナップショットテストを確認",
+    "details": {
+      "file_path": "src/prompt.unit.test.ts",
+      "analysis": "generatePrompt 関数の出力を assertSnapshot で検証するテストが複数存在することを確認した。templates/exam-prompt.eta の変更により、これらのテストは失敗する可能性が高い。",
+      "next_step": "テストを実行し、スナップショットを更新する必要がある。"
+    },
+    "intention": "テンプレート変更の影響を受けるテストコードを特定し、対応方針を決定するため。",
+    "context": "ユーザーフィードバックに基づき、テストコードを確認する作業の一環。",
+    "parentId": "0ae82da5-0d58-4399-8a3e-a7759172b14d",
+    "relatedIds": [
+      "22df5b2a-b5de-4393-ae74-7c6b5d09d88c",
+      "2516ef28-f4a3-4c59-8931-cd32ed5c613c"
+    ]
+  },
+  {
+    "id": "db0b28ad-7ca1-4c57-bcc2-de8750410b70",
+    "timestamp": "2025-03-31T13:57:12.660Z",
+    "type": "error_encountered",
+    "level": "info",
+    "summary": "スナップショットテストが失敗 (想定通り)",
+    "details": {
+      "command_executed": "deno test -A src/prompt.unit.test.ts",
+      "exit_code": 1,
+      "failed_tests": [
+        "generatePrompt snapshot test - Basic",
+        "generatePrompt snapshot test - Defaults",
+        "generatePrompt snapshot test - Empty Fields"
+      ],
+      "error_summary": "templates/exam-prompt.eta の変更により、generatePrompt の出力が変わり、既存のスナップショットと一致しなくなったため。",
+      "next_step": "deno test -A src/prompt.unit.test.ts -u コマンドでスナップショットを更新する。"
+    },
+    "intention": "テンプレート変更後のテスト結果を確認し、スナップショット更新の必要性を判断するため。",
+    "context": "ユーザーフィードバックに基づきテストコードを確認し、テストを実行した結果。",
+    "parentId": "0ae82da5-0d58-4399-8a3e-a7759172b14d",
+    "relatedIds": [
+      "22df5b2a-b5de-4393-ae74-7c6b5d09d88c",
+      "2516ef28-f4a3-4c59-8931-cd32ed5c613c",
+      "73ccc99b-8c44-4955-910a-903c3622a54c"
+    ]
+  },
+  {
+    "id": "27bc58c6-57cb-4484-96f5-f501e54b87c7",
+    "timestamp": "2025-03-31T13:57:39.189Z",
+    "type": "error_encountered",
+    "level": "warn",
+    "summary": "スナップショット更新コマンドの実行に失敗",
+    "details": {
+      "command_executed": "deno test -A src/prompt.unit.test.ts -u",
+      "exit_code": 1,
+      "error_message": "error: unexpected argument '-u' found",
+      "cause": "Denoのスナップショット更新フラグは `--update` であり、`-u` は不正な引数。",
+      "next_step": "正しいコマンド `deno test -A src/prompt.unit.test.ts --update` で再実行する。"
+    },
+    "intention": "失敗したスナップショットテストを更新しようとしたが、コマンドのフラグ指定を誤ったため。",
+    "context": "想定通り失敗したスナップショットテストを更新する過程。",
+    "parentId": "0ae82da5-0d58-4399-8a3e-a7759172b14d",
+    "relatedIds": [
+      "db0b28ad-7ca1-4c57-bcc2-de8750410b70"
+    ]
+  },
+  {
+    "id": "32fa0e28-ce43-446c-ab84-adacecb3d9f7",
+    "timestamp": "2025-03-31T13:58:02.147Z",
+    "type": "error_encountered",
+    "level": "error",
+    "summary": "スナップショット更新コマンドの再実行に失敗 (2回目)",
+    "details": {
+      "command_executed": "deno test -A src/prompt.unit.test.ts --update",
+      "exit_code": 1,
+      "error_message": "error: unexpected argument '--update' found",
+      "cause": "Deno test コマンドが `--update` フラグを標準オプションとして認識していない。スナップショット更新方法の理解が誤っている可能性が高い。",
+      "analysis": "2回連続でコマンドフラグのエラーが発生したため、試行を中断し、ユーザーと解決策を検討する。",
+      "next_step": "ユーザーに状況を報告し、正しいスナップショット更新方法について相談する。"
+    },
+    "intention": "失敗したスナップショットテストを更新しようとしたが、正しいコマンドフラグを特定できなかったため。",
+    "context": "スナップショット更新コマンドのフラグ指定エラー（1回目）の後、別のフラグで再試行したが再び失敗した状況。",
+    "parentId": "0ae82da5-0d58-4399-8a3e-a7759172b14d",
+    "relatedIds": [
+      "db0b28ad-7ca1-4c57-bcc2-de8750410b70",
+      "27bc58c6-57cb-4484-96f5-f501e54b87c7"
+    ]
+  },
+  {
+    "id": "1d700667-a7b2-43a5-b9fe-0d260e268967",
+    "timestamp": "2025-03-31T13:58:51.926Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "スナップショットテストの更新に成功",
+    "details": {
+      "command_executed": "deno test -A src/prompt.unit.test.ts -- --update",
+      "exit_code": 0,
+      "output_summary": "3つのスナップショットが更新され、テストが全てパスした。",
+      "updated_snapshot_file": "src/__snapshots__/prompt.unit.test.ts.snap"
+    },
+    "intention": "テンプレート変更に伴うスナップショットテストの失敗を解消するため。",
+    "context": "ユーザーの指示とエラーヒントに基づき、正しいコマンドでスナップショット更新を実行した結果。",
+    "parentId": "0ae82da5-0d58-4399-8a3e-a7759172b14d",
+    "relatedIds": [
+      "db0b28ad-7ca1-4c57-bcc2-de8750410b70",
+      "27bc58c6-57cb-4484-96f5-f501e54b87c7",
+      "32fa0e28-ce43-446c-ab84-adacecb3d9f7"
+    ]
+  },
+  {
+    "id": "c21c0c87-14c4-43af-8fa4-a75b07ee0680",
+    "timestamp": "2025-03-31T14:00:42.623Z",
+    "type": "error_encountered",
+    "level": "warn",
+    "summary": "deno.json へのタスク追加時に JSON 構文エラーが発生",
+    "details": {
+      "tool_used": "insert_content",
+      "file_path": "deno.json",
+      "error_message": "[json Error] 6 | ... : コンマが必要です",
+      "cause": "挿入した行の前の行 (6行目) の末尾にコンマを追加し忘れたため、JSON オブジェクトの構文が不正になった。",
+      "next_step": "apply_diff を使用して、6行目の末尾にコンマを追加し、7行目の挿入内容を修正する。"
+    },
+    "intention": "deno.json にスナップショット更新用のタスクを追加しようとしたが、JSON 構文を誤ったため。",
+    "context": "ユーザー指示に基づき deno.json にタスクを追加する作業中。",
+    "parentId": "1d700667-a7b2-43a5-b9fe-0d260e268967"
+  },
+  {
+    "id": "40210e39-fd69-45c4-8b4f-0e14e5b1b61c",
+    "timestamp": "2025-03-31T14:01:25.918Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "deno.json を修正し、スナップショット更新タスクを追加",
+    "details": {
+      "tool_used": "write_to_file",
+      "file_path": "deno.json",
+      "reason": "apply_diff が失敗したため、ファイル全体を正しい内容で上書きした。",
+      "change_summary": "6行目の末尾にコンマを追加し、7行目に 'test:snapshot:update' タスクを追加した。",
+      "added_task": {
+        "name": "test:snapshot:update",
+        "command": "deno test -A src/**/*.unit.test.ts -- --update"
+      }
+    },
+    "intention": "ユーザー指示に基づき、スナップショット更新を容易にするためのタスクを deno.json に追加するため。",
+    "context": "insert_content および apply_diff でのファイル修正に失敗した後、write_to_file でリカバリした。",
+    "parentId": "1d700667-a7b2-43a5-b9fe-0d260e268967",
+    "relatedIds": [
+      "c21c0c87-14c4-43af-8fa4-a75b07ee0680"
+    ]
+  },
+  {
+    "id": "3225ad06-0add-4bc0-af73-6e5078aa2f60",
+    "timestamp": "2025-03-31T14:05:18.548Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Gitコミットの準備",
+    "intention": "ユーザーの指示に基づき、これまでの変更をGitリポジトリにコミットする準備を行う",
+    "context": "プロンプトテンプレートの修正と関連ファイルの更新が完了し、ユーザーからコミット指示があったため",
+    "relatedIds": [
+      "a70f9c89-e7ec-4d87-9bab-384087a9906d"
+    ]
+  },
+  {
+    "id": "32eb77c2-4197-48ab-80cf-0a1474c5613d",
+    "timestamp": "2025-03-31T14:05:35.354Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "git status 実行完了 (コミット前確認)",
+    "details": {
+      "command": "git status",
+      "exit_code": 0,
+      "output": "On branch main\nYour branch is up to date with 'origin/main'.\n\nChanges not staged for commit:\n  (use \"git add <file>...\" to update what will be committed)\n  (use \"git restore <file>...\" to discard changes in working directory)\n\tmodified:   deno.json\n\tmodified:   logs/ask/roo-activity-2025-03-31.json\n\tmodified:   logs/boomerang/roo-activity-2025-03-31.json\n\tmodified:   logs/code/roo-activity-2025-03-31.json\n\tmodified:   src/__snapshots__/prompt.unit.test.ts.snap\n\tmodified:   templates/exam-prompt.eta\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")\n"
+    },
+    "intention": "コミット対象となる変更内容を確認する",
+    "context": "ユーザーからのコミット指示を受けて",
+    "parentId": "3225ad06-0add-4bc0-af73-6e5078aa2f60"
+  },
+  {
+    "id": "b63c670b-6cb9-422c-8ed4-fb04810fd2a3",
+    "timestamp": "2025-03-31T14:05:53.568Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": ".gitignoreの内容確認完了",
+    "details": {
+      "file_path": ".gitignore",
+      "findings": "ログディレクトリ(logs/)を除外する設定が含まれていないことを確認した。"
+    },
+    "intention": "コミット前に不要なファイルが含まれないように、.gitignoreの設定を確認する",
+    "context": "git statusの結果、ログファイルが変更対象に含まれていたため",
+    "parentId": "32eb77c2-4197-48ab-80cf-0a1474c5613d"
+  },
+  {
+    "id": "d3a28629-4b36-4daf-a8a8-43ab109f532a",
+    "timestamp": "2025-03-31T14:07:16.519Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ログファイルを含めてコミットすることを決定",
+    "details": {
+      "user_intention": "ログファイルをAI用のドキュメントとして利用するため、コミットに含めたい。",
+      "decision": ".gitignoreを変更せず、全ての変更ファイルをコミット対象とする。"
+    },
+    "intention": "ユーザーの意図を汲み取り、コミット方針を決定する",
+    "context": "ログファイルをコミットに含めるかどうかの確認に対するユーザーからの回答を受けて",
+    "parentId": "b63c670b-6cb9-422c-8ed4-fb04810fd2a3"
   }
 ]
