@@ -393,5 +393,171 @@
     },
     "intention": "ユーザーの指示に基づき、過去のログを調査し、中断された実装計画の再開ポイントを特定する。",
     "context": "ユーザーから3/30のログ確認と実装計画再開の指示を受け、git status 実行後にログ検索・分析を行った。"
+  },
+  {
+    "id": "2aff70b1-8c65-4623-b7b7-b9a006ca1f3a",
+    "timestamp": "2025-03-31T09:57:29.122Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "git status コマンドを実行し、リポジトリの状態を確認したわ。",
+    "details": {
+      "command": "git status",
+      "output": "On branch main\nYour branch is up to date with 'origin/main'.\n\nnothing to commit, working tree clean"
+    },
+    "intention": "作業開始前にリポジトリの状態を確認するためよ。",
+    "context": "ユーザーからの指示に基づき、中断した作業を再開するための準備段階だわ。"
+  },
+  {
+    "id": "1ef4cb84-fa7c-4c62-8dd9-a6ba39d37c7e",
+    "timestamp": "2025-03-31T09:57:53.078Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "3月30日のログを検索・分析し、中断時点の作業内容を特定したわ。",
+    "details": {
+      "search_parameters": {
+        "logsDir": "/Users/annenpolka/junks/sikakumaru/logs",
+        "startDate": "2025-03-30",
+        "endDate": "2025-03-30",
+        "limit": 50
+      },
+      "analysis_result": "ログID a8dd2929-1688-4faa-9d06-76fe02f457f2 により、'Comprehensive Exam Generator' プロジェクトの PoC ステップ 2c (LLM API 接続) の実装直前で中断したと判断したわ。",
+      "identified_next_step": "PoC ステップ 2c の実装再開。"
+    },
+    "intention": "ユーザーの指示に基づき、過去のログから中断した作業内容を正確に把握し、作業再開の準備をするためよ。",
+    "context": "ユーザーから3月30日の作業状況の確認と次のアクションの問い合わせを受けた後、ログ検索ツールを実行し、その結果を分析した段階だわ。"
+  },
+  {
+    "id": "f16f8ba7-9a09-439d-a64b-9315a71c6af5",
+    "timestamp": "2025-03-31T09:59:14.597Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指示に基づき、'Comprehensive Exam Generator' PoC ステップ 2c (LLM API 接続) の実装タスクを Code モードに委任することを決定したわ。",
+    "details": {
+      "user_request": "geminiとlangchainでllm部分を書いてほしい。TDDで進めて欲しいけど、ポイントは実際に通信するテストを用意して欲しいこと",
+      "delegated_mode": "code",
+      "task_scope": "PoC ステップ 2c: Gemini API への接続と単純な応答取得 (LangChain 使用、TDD、実通信テスト含む)",
+      "parent_log_id": "1ef4cb84-fa7c-4c62-8dd9-a6ba39d37c7e"
+    },
+    "intention": "ユーザーの具体的な要求に基づき、中断していた開発タスクを適切な専門モードに委任し、プロジェクトを前進させるためよ。",
+    "context": "ログ分析により中断タスクを特定し、ユーザーに再開の意思と具体的な実装方針を確認した後だわ。"
+  },
+  {
+    "id": "fcc3b3d5-72e2-42fe-8f52-edc9103c370d",
+    "timestamp": "2025-03-31T10:11:29.644Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Code モードによる PoC ステップ 2c (LLM API 接続) の完了を確認したわ。",
+    "details": {
+      "subtask_result_summary": "PoC ステップ 2c (LLM API 接続実装) を完了。Gemini/LangChain使用、TDD、実通信テスト含む。dotenvによるAPIキー管理も実装。全テスト成功。",
+      "completed_files": [
+        "src/llm.ts",
+        "src/llm.test.ts",
+        ".env"
+      ],
+      "modified_files": [
+        "deno.json"
+      ],
+      "next_potential_step": "PoC ステップ 2a, 2b, 2c の機能を統合し、基本的な CLI アプリケーションとして動作させる。"
+    },
+    "intention": "委任したサブタスクの完了を確認し、プロジェクトの進行状況を把握、次のステップを検討するためよ。",
+    "context": "Code モードが PoC ステップ 2c の実装とテストを完了し、結果を報告した直後だわ。",
+    "parentId": "f16f8ba7-9a09-439d-a64b-9315a71c6af5"
+  },
+  {
+    "id": "90c945f6-52b6-446b-9cef-c1e2f81c3ffd",
+    "timestamp": "2025-03-31T10:12:54.320Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指示に基づき、現在のソースコードレビューと批判タスクを Code モードに委任することを決定したわ。",
+    "details": {
+      "user_request": "一度、このプロジェクトの背景情報を一切見ずに、ソースコードだけを読んだうえで、ソースコードや設計を批判してほしい。",
+      "delegated_mode": "code",
+      "task_scope": "src/ ディレクトリ内の TypeScript コード (.ts, .test.ts) のレビューと批判。プロジェクト背景情報は無視。",
+      "review_focus": "コード品質、型安全性、構造、テスト、設計原則など。",
+      "parent_log_id": "fcc3b3d5-72e2-42fe-8f52-edc9103c370d"
+    },
+    "intention": "ユーザーの要求に応じ、現在のコードベースに対する客観的かつ批判的な評価を得るため、専門モードにレビューを委任するわ。",
+    "context": "PoC の各ステップが完了し、次の統合ステップに進む提案をしたが、ユーザーからコードレビューの要望があった段階よ。"
+  },
+  {
+    "id": "9c140f50-84f9-4759-8ebf-ebe263cefb5b",
+    "timestamp": "2025-03-31T10:21:24.249Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Code モードによるソースコードレビュー完了を確認したわ。",
+    "details": {
+      "subtask_result_summary": "Code モードが src/ 配下のコードレビューを完了し、結果を code-review-summary.md に保存。特にプロンプト生成とテスト戦略に重大な改善点を指摘。",
+      "created_files": [
+        "code-review-summary.md"
+      ],
+      "next_step": "レビュー結果ファイルの内容を確認する。"
+    },
+    "intention": "委任したコードレビュータスクの結果を確認し、ユーザーに提示する準備をするためよ。",
+    "context": "Code モードがソースコードレビューを完了し、結果ファイルを生成した直後だわ。",
+    "parentId": "90c945f6-52b6-446b-9cef-c1e2f81c3ffd"
+  },
+  {
+    "id": "6e3213c1-b9cc-4cbb-9091-e6fa6af1feb3",
+    "timestamp": "2025-03-31T10:21:43.531Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Code モードによるコードレビュー結果 (`code-review-summary.md`) の内容を確認・分析したわ。",
+    "details": {
+      "review_file_path": "code-review-summary.md",
+      "key_findings": [
+        "プロンプト生成実装の根本的な問題 (ハードコード)",
+        "テスト品質・カバレッジの低さ、戦略の問題",
+        "設定管理・DIの欠如",
+        "TypeScript活用度の低さ",
+        "コード可読性の問題"
+      ],
+      "key_suggestions": [
+        "プロンプト処理の抜本的見直し",
+        "テスト戦略の再構築",
+        "DI導入",
+        "型定義強化",
+        "コードクリーンナップ"
+      ],
+      "overall_assessment": "現状コードは実運用品質に達していないとの評価。"
+    },
+    "intention": "委任したコードレビューの結果を把握し、ユーザーと次のアクションを決定するための情報を整理するためよ。",
+    "context": "Code モードが生成したレビュー結果ファイルを読み込んだ直後だわ。",
+    "parentId": "9c140f50-84f9-4759-8ebf-ebe263cefb5b"
+  },
+  {
+    "id": "1e140ebb-1c4f-4929-889f-6d557bd44ae5",
+    "timestamp": "2025-03-31T10:22:28.003Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "git status コマンドを実行し、コミット対象の変更を確認したわ。",
+    "details": {
+      "command": "git status",
+      "output": "On branch main\nYour branch is ahead of 'origin/main' by 1 commit.\n  (use \"git push\" to publish your local commits)\n\nChanges not staged for commit:\n  (use \"git add <file>...\" to update what will be committed)\n  (use \"git restore <file>...\" to discard changes in working directory)\n\tmodified:   deno.json\n\tmodified:   logs/boomerang/roo-activity-2025-03-31.json\n\tmodified:   logs/code/roo-activity-2025-03-31.json\n\nUntracked files:\n  (use \"git add <file>...\" to include in what will be committed)\n\tcode-review-summary.md\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")",
+      "identified_changes": [
+        "modified: deno.json",
+        "modified: logs/boomerang/roo-activity-2025-03-31.json",
+        "modified: logs/code/roo-activity-2025-03-31.json",
+        "untracked: code-review-summary.md"
+      ]
+    },
+    "intention": "ユーザーの指示に基づき、現在の変更点をコミットする準備として、対象ファイルを確認するためよ。",
+    "context": "コードレビュー結果を確認した後、ユーザーからコミットの指示があった段階だわ。",
+    "parentId": "6e3213c1-b9cc-4cbb-9091-e6fa6af1feb3"
+  },
+  {
+    "id": "e237a79e-347e-47d7-bd3d-d811539da1ac",
+    "timestamp": "2025-03-31T10:23:02.275Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指示に基づき、コミット対象から .env ファイルを除外することを決定したわ。",
+    "details": {
+      "user_feedback": ".envは含めないで",
+      "reason": "セキュリティ上のベストプラクティスに従い、機密情報を含む可能性のある .env ファイルを Git リポジトリに含めないためよ。",
+      "previous_plan": ".env を含めてコミットする指示を Code モードに出していたわ。",
+      "new_plan": ".env を除外してコミットするように Code モードへの指示を修正するわ。"
+    },
+    "intention": "ユーザーのフィードバックを反映し、安全な Git 運用を確保するため、コミット対象を修正するわ。",
+    "context": "Code モードへのコミットタスク依頼がユーザーによって拒否された直後よ。",
+    "parentId": "1e140ebb-1c4f-4929-889f-6d557bd44ae5"
   }
 ]
