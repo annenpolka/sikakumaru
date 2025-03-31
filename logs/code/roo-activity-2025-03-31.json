@@ -2768,5 +2768,786 @@
     "intention": "リファクタリング後のコードが更新されたスナップショットと一致し、テストがパスすることを確認するため。",
     "context": "スナップショット更新後、テストを再実行した。",
     "parentId": "1d4fd5f8-a4d8-4aec-9610-311045b36943"
+  },
+  {
+    "id": "ce6f15eb-cba3-4cee-9c90-d17d22e13a0c",
+    "timestamp": "2025-03-31T11:03:22.725Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "指定されたファイルをステージングしたわ。",
+    "details": {
+      "command": "git add deno.json logs/boomerang/roo-activity-2025-03-31.json logs/code/roo-activity-2025-03-31.json src/prompt.test.ts src/prompt.ts src/types.ts src/__snapshots__/ templates/",
+      "staged_files": [
+        "deno.json",
+        "logs/boomerang/roo-activity-2025-03-31.json",
+        "logs/code/roo-activity-2025-03-31.json",
+        "src/prompt.test.ts",
+        "src/prompt.ts",
+        "src/types.ts",
+        "src/__snapshots__/",
+        "templates/"
+      ]
+    },
+    "intention": "プロンプトリファクタリングの結果をコミットするために、変更されたファイルと新しいディレクトリをステージングするわ。",
+    "context": "`git status` で変更を確認し、ユーザーの指示に従ってステージングを実行した直後よ。"
+  },
+  {
+    "id": "b74dcd7b-b763-42e7-bbd3-487cb666f73b",
+    "timestamp": "2025-03-31T11:03:36.726Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "プロンプトリファクタリングの結果をコミットしたわ。",
+    "details": {
+      "command": "git commit -m \"refactor: Improve prompt handling with external template and engine (eta)\"",
+      "commit_hash": "7519fe3",
+      "commit_message": "refactor: Improve prompt handling with external template and engine (eta)",
+      "output": "[main 7519fe3] refactor: Improve prompt handling with external template and engine (eta)\n 8 files changed, 1169 insertions(+), 220 deletions(-)\n create mode 100644 src/__snapshots__/prompt.test.ts.snap\n create mode 100644 templates/exam-prompt.eta"
+    },
+    "intention": "ユーザーの指示に従い、ステージングされた変更をリポジトリに記録するためよ。",
+    "context": "指定されたファイルをステージングした後、コミットコマンドを実行した直後だわ。",
+    "parentId": "ce6f15eb-cba3-4cee-9c90-d17d22e13a0c"
+  },
+  {
+    "id": "7fdce98f-5733-42be-898b-a9f6eb30d86e",
+    "timestamp": "2025-03-31T11:08:19.869Z",
+    "type": "error_encountered",
+    "level": "error",
+    "summary": "apply_diff が src/llm.test.ts への適用に2回連続で失敗したわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "error_message": "Failed to find a matching location in the file (33% confidence, needs 100%)",
+      "attempted_diff": "--- src/llm.test.ts\n+++ src/llm.test.ts\n@@ -1,34 +1,37 @@\n-import { AIMessageChunk } from \"@langchain/core/messages\"; // HumanMessage も必要ならインポート\n+import { AIMessage, BaseMessage, HumanMessage } from \"@langchain/core/messages\"; // AIMessage, BaseMessage, HumanMessage をインポート\n import { ChatGoogleGenerativeAI } from \"@langchain/google-genai\";\n import { assert, assertEquals } from \"@std/assert\";\n-import { resolvesNext, stub } from \"@std/testing/mock\"; // resolvesNext をインポート\n+import { spy, stub } from \"@std/testing/mock\"; // spy をインポート (resolvesNext は不要に)\n import { callLLM } from \"./llm.ts\";\n+\n+// ChatGoogleGenerativeAI の invoke メソッドの型シグネチャに合わせたインターフェース\n+// これにより、完全なモッククラスを作らずとも、必要なメソッドを持つオブジェクトを渡せる\n+interface MockLLMClient {\n+  invoke(messages: BaseMessage[]): Promise<BaseMessage>;\n+}\n \n // --- モックテスト ---\n Deno.test(\"callLLM should return mocked response for a simple prompt\", async () => {\n   const mockResponse = \"Mocked response from Gemini!\";\n-  // callLLM が内部で ChatGoogleGenerativeAI を使うと仮定し、invoke をスタブ化\n-  const modelStub = stub(\n-    ChatGoogleGenerativeAI.prototype,\n-    \"invoke\",\n-    resolvesNext([new AIMessageChunk({ content: mockResponse })]), // resolvesNext を使用\n-  );\n-  // Deno.env.get もスタブ化してダミーの API キーを返す\n-  const envStub = stub(Deno.env, \"get\", (key: string) => {\n-    if (key === \"GEMINI_API_KEY\") {\n-      return \"DUMMY_API_KEY_FOR_TESTING\";\n-    }\n-    // 元の Deno.env.get の挙動を模倣（他の環境変数を壊さないため）\n-    // ただし、テスト環境で他の環境変数に依存するのは避けるべき\n-    // ここではシンプルに undefined を返すか、必要なら元の関数を呼ぶ\n-    // return Deno.env.get(key); // 元の関数を呼ぶ場合 (非推奨)\n-    return undefined; // 他のキーは undefined を返す\n-  });\n+\n+  // モックの LLM クライアントを作成\n+  const mockClient: MockLLMClient = {\n+    // invoke メソッドをスタブ化し、指定したレスポンスを返すように設定\n+    invoke: stub(\n+      // deno-lint-ignore no-explicit-any\n+      {} as any, // ダミーオブジェクト\n+      \"invoke\",\n+      () => Promise.resolve(new AIMessage({ content: mockResponse })), // AIMessage を使用\n+    ),\n+  };\n+\n+  // invoke が呼び出されたか確認するためのスパイ\n+  const invokeSpy = spy(mockClient, \"invoke\");\n \n   try {\n     const prompt = \"Test prompt\";\n-    const result = await callLLM(prompt);\n+    // モッククライアントを注入して callLLM を呼び出す\n+    const result = await callLLM(mockClient, prompt);\n     assertEquals(result, mockResponse);\n-  } finally {\n-    modelStub.restore(); // スタブを元に戻す\n-    envStub.restore(); // 環境変数のスタブも元に戻す\n-  }\n+    // invoke が期待通りに呼び出されたか確認 (任意だが良い習慣)\n+    assertEquals(invokeSpy.calls.length, 1);\n+    // 渡された引数も確認できる\n+    assert(invokeSpy.calls[0].args[0][0] instanceof HumanMessage);\n+    assertEquals((invokeSpy.calls[0].args[0][0] as HumanMessage).content, prompt);\n+  } finally {\n+    // スタブをリストアする必要がある場合 (今回は invoke のスタブ)\n+    // stub() で生成されたスタブは自動でリストアされることが多いが、明示的に行う場合\n+    // mockClient.invoke.restore(); // stub が restore メソッドを持つ場合\n+    // spy もリストア可能\n+    invokeSpy.restore();\n+  }\n });\n \n // --- 実通信テスト ---\n@@ -39,8 +42,19 @@\n   // ここでの Deno.env.get はスタブ化されていない元の関数が使われる\n   ignore: !Deno.env.get(\"GEMINI_API_KEY\"),\n   fn: async () => {\n+    const apiKey = Deno.env.get(\"GEMINI_API_KEY\");\n+    if (!apiKey) {\n+      // このチェックは ignore で行われるが、念のため型安全のためにも行う\n+      throw new Error(\"GEMINI_API_KEY is not set for the actual test.\");\n+    }\n+    // 実際の ChatGoogleGenerativeAI インスタンスを作成\n+    const actualClient = new ChatGoogleGenerativeAI({\n+      apiKey: apiKey,\n+      model: \"gemini-1.5-pro\", // 実際のモデル名を使用\n+    });\n+\n     const prompt = \"Hello\"; // 簡単なテストプロンプト\n     try {\n-      const result = await callLLM(prompt); // 実際のクライアントを注入\n+      const result = await callLLM(actualClient, prompt); // 実際のクライアントを注入\n \n       // 具体的な応答内容は問わず、文字列であり空でないことだけを確認\n       assert(typeof result === \"string\", \"Result should be a string.\");\n",
+      "confidence": 0.33,
+      "strategy": "levenshtein",
+      "context_lines_matched": 8,
+      "total_context_lines": 21
+    },
+    "intention": "TDD の Red フェーズとして、src/llm.test.ts を DI を使うように修正しようとしたわ。",
+    "context": "src/llm.ts と src/llm.test.ts の内容を確認した後、テストコード修正の diff を生成して適用しようとしたところよ。"
+  },
+  {
+    "id": "10a1b738-8d18-4eff-90b3-8151fed4eddb",
+    "timestamp": "2025-03-31T11:08:45.599Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "apply_diff 失敗のため、変更を分割して適用する戦略をとるわ。",
+    "details": {
+      "strategy": "Split the diff into smaller parts and apply them sequentially.",
+      "reason": "The apply_diff tool failed twice consecutively with the full diff, suggesting issues with context matching or tool limitations.",
+      "next_step": "Apply the diff for the mock test section first."
+    },
+    "intention": "To overcome the apply_diff tool's failure and proceed with the refactoring task by reducing the complexity of the change applied at once.",
+    "context": "After two consecutive failures of apply_diff on src/llm.test.ts.",
+    "relatedIds": [
+      "7fdce98f-5733-42be-898b-a9f6eb30d86e"
+    ]
+  },
+  {
+    "id": "4e357571-fb51-4485-a4b5-ca06a8c711df",
+    "timestamp": "2025-03-31T11:09:35.373Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/llm.test.ts のモックテスト部分の DI 対応 diff を適用したわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "change_description": "Applied diff to modify mock test section to use dependency injection for the LLM client."
+    },
+    "intention": "TDD の Red フェーズを進めるため、テストコードを DI 前提の形に修正するわ。",
+    "context": "apply_diff が連続失敗した後、変更を分割してモックテスト部分の diff を適用し、成功したところよ。",
+    "parentId": "10a1b738-8d18-4eff-90b3-8151fed4eddb"
+  },
+  {
+    "id": "58a47c9f-588b-4a52-bcc2-7f129ddf0ec5",
+    "timestamp": "2025-03-31T11:09:59.071Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/llm.test.ts の実通信テスト部分の DI 対応 diff を適用したわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "change_description": "Applied diff to modify the actual API call test section to use dependency injection."
+    },
+    "intention": "TDD の Red フェーズを完了させるため、テストコード全体を DI 前提の形に修正するわ。",
+    "context": "モックテスト部分の diff 適用成功後、実通信テスト部分の diff を適用し、成功したところよ。",
+    "parentId": "4e357571-fb51-4485-a4b5-ca06a8c711df"
+  },
+  {
+    "id": "159d660f-bd6c-41e7-9926-3d9c659356ca",
+    "timestamp": "2025-03-31T11:10:16.245Z",
+    "type": "error_encountered",
+    "level": "warn",
+    "summary": "src/llm.test.ts の修正後、型エラーが検出されたわ (TDD Red フェーズ)。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "errors": [
+        {
+          "line": 19,
+          "message": "Type 'Stub<any, unknown[], unknown>' is not assignable to type '(messages: BaseMessage[]) => Promise<BaseMessage>'. Type 'unknown' is not assignable to type 'Promise<BaseMessage>'."
+        },
+        {
+          "line": 33,
+          "message": "Expected 1 arguments, but got 2."
+        }
+      ],
+      "phase": "TDD Red"
+    },
+    "intention": "TDD プロセスにおける想定内のエラーを記録し、次の実装修正フェーズへの移行を示すためよ。",
+    "context": "src/llm.test.ts の DI 対応修正 (モックテスト、実通信テスト) が完了した直後。",
+    "parentId": "58a47c9f-588b-4a52-bcc2-7f129ddf0ec5"
+  },
+  {
+    "id": "8ede1c29-6050-4af1-9b54-e12e3bcd78a8",
+    "timestamp": "2025-03-31T11:11:21.776Z",
+    "type": "error_encountered",
+    "level": "warn",
+    "summary": "src/llm.ts 修正後、src/llm.test.ts で型エラーが検出されたわ (TDD Red フェーズ継続中)。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "errors": [
+        {
+          "line": 19,
+          "message": "Type 'Stub<any, unknown[], unknown>' is not assignable to type '(messages: BaseMessage[]) => Promise<BaseMessage>'. Type 'unknown' is not assignable to type 'Promise<BaseMessage>'."
+        },
+        {
+          "line": 65,
+          "message": "Cannot find name 'ChatGoogleGenerativeAI'."
+        }
+      ],
+      "phase": "TDD Red (Implementation modified, but tests still failing due to type errors)"
+    },
+    "intention": "実装コード修正後に残っている型エラーを記録し、テストコードの最終調整が必要であることを示すためよ。",
+    "context": "src/llm.ts を DI 対応させた後、src/llm.test.ts で型エラーが検出された状況。",
+    "parentId": "159d660f-bd6c-41e7-9926-3d9c659356ca"
+  },
+  {
+    "id": "47640ac2-3a92-4a35-bc1d-18e0e0e32cf0",
+    "timestamp": "2025-03-31T11:12:15.281Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "src/llm.test.ts の型エラー修正後も VSCode がエラーを表示し続けるため、テストを実行して実際の動作を確認するわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "situation": "Code seems correct (import added, type assertion applied), but VSCode still reports the same type errors.",
+      "possible_causes": [
+        "VSCode error reporting lag/issue",
+        "Underlying issue not reflected in static analysis"
+      ],
+      "next_step": "Run 'deno test' to verify actual behavior."
+    },
+    "intention": "VSCode の静的解析エラーに惑わされず、実際のテスト実行結果に基づいて TDD の Green フェーズ完了を確認するためよ。",
+    "context": "After applying fixes for type errors in src/llm.test.ts, but VSCode error reporting hasn't updated.",
+    "parentId": "8ede1c29-6050-4af1-9b54-e12e3bcd78a8"
+  },
+  {
+    "id": "1e2bff27-9c7d-48b4-bc3a-c97c8edffe45",
+    "timestamp": "2025-03-31T11:12:36.337Z",
+    "type": "error_encountered",
+    "level": "error",
+    "summary": "deno test が src/llm.test.ts の型エラーで失敗したわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "command": "deno test --allow-env --allow-net src/llm.test.ts",
+      "exit_code": 1,
+      "error_message": "TS2322 [ERROR]: Type 'Stub<any, unknown[], unknown>' is not assignable to type '(messages: BaseMessage[]) => Promise<BaseMessage>'.",
+      "line": 20,
+      "phase": "TDD Green (failed)"
+    },
+    "intention": "リファクタリング後のコードとテストが正しく動作するか確認しようとしたけれど、型エラーで失敗したわ。",
+    "context": "src/llm.ts と src/llm.test.ts の修正後、テストを実行したところよ。",
+    "parentId": "47640ac2-3a92-4a35-bc1d-18e0e0e32cf0"
+  },
+  {
+    "id": "7da82afb-c783-4959-8bfb-3fbd04d9769a",
+    "timestamp": "2025-03-31T11:14:04.750Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/llm.test.ts の型エラーを修正したわ (MockLLMClient の invokeSpy プロパティ削除)。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "change_description": "Removed the unnecessary 'invokeSpy' property from MockLLMClient class definition to resolve the type error.",
+      "tool_used": "write_to_file"
+    },
+    "intention": "テストコードの型エラーを解消し、TDD の Green フェーズに進むためよ。",
+    "context": "write_to_file で src/llm.test.ts を修正し、不要なクラスプロパティを削除した直後。",
+    "parentId": "1e2bff27-9c7d-48b4-bc3a-c97c8edffe45"
+  },
+  {
+    "id": "486a00be-8034-4e03-bdde-95577aa7d06e",
+    "timestamp": "2025-03-31T11:14:26.043Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "deno test が成功したわ (TDD Green フェーズ完了)。",
+    "details": {
+      "command": "deno test --allow-env --allow-net src/llm.test.ts",
+      "exit_code": 0,
+      "output_summary": "1 passed, 1 ignored. Mock test passed, actual API test ignored as expected.",
+      "phase": "TDD Green (Completed)"
+    },
+    "intention": "リファクタリング後のコードとテストが正しく動作することを確認するためよ。",
+    "context": "src/llm.ts と src/llm.test.ts の DI 対応修正後、テストを実行したところ。",
+    "parentId": "7da82afb-c783-4959-8bfb-3fbd04d9769a"
+  },
+  {
+    "id": "af7c21dd-2aeb-4941-b2fc-9e388464f59f",
+    "timestamp": "2025-03-31T11:15:12.054Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "attempt_completion が lint warning を理由に拒否されたため、関連する警告を修正するわ。",
+    "details": {
+      "feedback": "Workspace Problems を確認するように指示された。",
+      "warnings": [
+        {
+          "file": "ax_gemini_deno_example.ts",
+          "line": 43,
+          "message": "`any` type is not allowed"
+        },
+        {
+          "file": "src/llm.test.ts",
+          "line": 24,
+          "message": "Async method 'invoke' has no 'await' expression..."
+        }
+      ],
+      "decision": "ax_gemini_deno_example.ts はスコープ外のため無視。src/llm.test.ts の async warning を修正する。",
+      "next_step": "Remove 'async' keyword from MockLLMClient.invoke in src/llm.test.ts."
+    },
+    "intention": "ユーザーのフィードバックに対応し、リファクタリング対象ファイルの lint warning を解消するためよ。",
+    "context": "attempt_completion が拒否され、lint warning の修正を指示された直後。",
+    "parentId": "486a00be-8034-4e03-bdde-95577aa7d06e"
+  },
+  {
+    "id": "3e0627d5-d411-4344-9ac8-35570ec839d6",
+    "timestamp": "2025-03-31T11:15:31.613Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "search_and_replace で async 削除が不要と判明。lint warning は既に解消済みと判断したわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "tool_result": "search_and_replace reported 'No changes needed'.",
+      "analysis": "The 'async' keyword was likely already removed in the previous write_to_file operation. The lint warning reported by VSCode was probably outdated.",
+      "next_step": "Re-run 'deno test' to confirm tests pass and the lint warning is gone."
+    },
+    "intention": "lint warning の原因を特定し、不要な修正を避け、最終確認のテストに進むためよ。",
+    "context": "search_and_replace で async 削除を試みたが、変更不要と報告された直後。",
+    "parentId": "af7c21dd-2aeb-4941-b2fc-9e388464f59f"
+  },
+  {
+    "id": "2297fce9-2e14-47d0-adfa-3b72c7d20fae",
+    "timestamp": "2025-03-31T11:16:19.789Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/llm.test.ts の MockLLMClient.invoke から async を削除したわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "change_description": "Removed 'async' keyword from MockLLMClient.invoke method using search_and_replace.",
+      "tool_used": "search_and_replace"
+    },
+    "intention": "lint warning を解消するためよ。",
+    "context": "lint warning 解消のため search_and_replace を実行した直後。",
+    "parentId": "af7c21dd-2aeb-4941-b2fc-9e388464f59f"
+  },
+  {
+    "id": "15128d04-cbc9-4537-8d97-563fb3730b8b",
+    "timestamp": "2025-03-31T11:16:30.859Z",
+    "type": "error_encountered",
+    "level": "error",
+    "summary": "async 削除後、src/llm.test.ts で新たな型エラーが発生したわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "line": 26,
+      "error_message": "Type 'AIMessage' is missing the following properties from type 'Promise<BaseMessage>': then, catch, finally",
+      "cause": "Removed 'async' from MockLLMClient.invoke but did not wrap the return value with Promise.resolve()."
+    },
+    "intention": "lint warning 解消のための修正が、別の型エラーを引き起こしたことを記録するためよ。",
+    "context": "search_and_replace で MockLLMClient.invoke から async を削除した直後。",
+    "parentId": "2297fce9-2e14-47d0-adfa-3b72c7d20fae"
+  },
+  {
+    "id": "6cb9e0ed-bdab-4ad2-91e6-9d80bc3492ff",
+    "timestamp": "2025-03-31T11:16:52.161Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/llm.test.ts の MockLLMClient.invoke の戻り値を Promise.resolve() でラップしたわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "change_description": "Wrapped the return value of MockLLMClient.invoke with Promise.resolve() using search_and_replace.",
+      "tool_used": "search_and_replace"
+    },
+    "intention": "async 削除によって発生した型エラーを解消するためよ。",
+    "context": "async 削除後に発生した型エラーを修正するため search_and_replace を実行した直後。",
+    "parentId": "15128d04-cbc9-4537-8d97-563fb3730b8b"
+  },
+  {
+    "id": "e50d4094-42a1-4f70-8673-a514cfc56c38",
+    "timestamp": "2025-03-31T11:17:03.321Z",
+    "type": "error_encountered",
+    "level": "error",
+    "summary": "Promise.resolve() 追加後も src/llm.test.ts で型エラーが解消されないわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "line": 26,
+      "error_message": "Type 'AIMessage' is missing the following properties from type 'Promise<BaseMessage>': then, catch, finally",
+      "cause": "Unknown. search_and_replace reported success in wrapping the return value with Promise.resolve(), but the type error persists.",
+      "next_step": "Re-read the file to verify the actual content."
+    },
+    "intention": "修正が適用されたはずなのに型エラーが解消されない不可解な状況を記録するためよ。",
+    "context": "search_and_replace で Promise.resolve() を追加した直後だが、型エラーが依然として報告されている。",
+    "parentId": "6cb9e0ed-bdab-4ad2-91e6-9d80bc3492ff"
+  },
+  {
+    "id": "28d93a1e-bd60-42a0-b629-8791ed46d52b",
+    "timestamp": "2025-03-31T11:18:20.326Z",
+    "type": "conversation",
+    "level": "info",
+    "summary": "ユーザーに dotenv の扱いについて確認し、DI 維持の方針が正しいことを確認したわ。",
+    "details": {
+      "question": "「環境変数はdotenvで読み込むようになおして」という指示の意図確認",
+      "user_answer": "いいえ、`src/llm.ts` の DI は維持してください。`dotenv` の読み込みは、`src/llm.ts` を呼び出す側 (例: `main.ts`) の責任とします。",
+      "conclusion": "現在の DI を導入したリファクタリング方針はユーザーの意図と合致している。"
+    },
+    "intention": "ユーザーの指示の意図を明確にし、リファクタリング方針の齟齬を解消するためよ。",
+    "context": "ユーザーから dotenv に関する指示を受け、その意図を確認した直後。",
+    "parentId": "e50d4094-42a1-4f70-8673-a514cfc56c38"
+  },
+  {
+    "id": "4188413b-16cd-4cad-b74f-fa91e33b8bcf",
+    "timestamp": "2025-03-31T11:19:13.356Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指示に基づき、src/llm.test.ts の実通信テスト内で dotenv を使って API キーを読み込むように修正するわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "user_instruction": "`src/llm.test.ts` の実通信テストの中で `dotenv` を使って API キーを読み込むようにしてください。",
+      "clarification": "This means the integration test itself will load the .env file, not the main src/llm.ts module.",
+      "next_step": "Add dotenv import and loadSync call within the integration test function."
+    },
+    "intention": "実通信テストの実行に必要な API キーを、テスト実行時に .env ファイルから安全に読み込むためよ。",
+    "context": "User clarified the previous ambiguous instruction about using dotenv.",
+    "parentId": "e50d4094-42a1-4f70-8673-a514cfc56c38"
+  },
+  {
+    "id": "d4c6188d-5ff2-421d-a5be-94cddb5eacc0",
+    "timestamp": "2025-03-31T11:19:26.796Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/llm.test.ts の実通信テスト内に dotenv の読み込み処理を追加したわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "change_description": "Added import for 'loadSync' from '@std/dotenv' and inserted the loadSync call within the integration test function.",
+      "tool_used": "insert_content"
+    },
+    "intention": "ユーザーの指示に従い、実通信テスト実行時に .env ファイルから API キーを読み込めるようにするためよ。",
+    "context": "ユーザーからの指示を受けて、実通信テスト内に dotenv 処理を追加した直後。",
+    "parentId": "4188413b-16cd-4cad-b74f-fa91e33b8bcf"
+  },
+  {
+    "id": "5fe72cbe-9cf6-407a-8a9f-24befb4b9ea9",
+    "timestamp": "2025-03-31T11:19:49.167Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "最終確認の deno test が成功したわ。",
+    "details": {
+      "command": "deno test --allow-env --allow-net src/llm.test.ts",
+      "exit_code": 0,
+      "output_summary": "1 passed, 1 ignored. No type errors or lint warnings.",
+      "phase": "TDD Green (Final Verification)"
+    },
+    "intention": "すべての修正が完了し、テストが警告なくパスすることを確認するためよ。",
+    "context": "実通信テスト内に dotenv 読み込みを追加した後、テストを実行したところ。",
+    "parentId": "d4c6188d-5ff2-421d-a5be-94cddb5eacc0"
+  },
+  {
+    "id": "98234d43-98b7-4026-9cd3-947632735c0e",
+    "timestamp": "2025-03-31T11:21:42.156Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "実通信テストが ignore される問題の原因を特定し、修正方針を決定したわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "issue": "Integration test was always ignored because the 'ignore' condition checked Deno.env before dotenv loaded the key.",
+      "cause": "The 'ignore' property of Deno.test is evaluated before the test function ('fn') runs, but dotenv loadSync was called inside 'fn'.",
+      "resolution_plan": [
+        "Remove the 'ignore' property from the integration test definition.",
+        "Modify the check inside 'fn': if apiKey is not found after loadSync, fail the test using assert(false, ...) instead of throwing an error."
+      ],
+      "next_step": "Apply the changes to src/llm.test.ts."
+    },
+    "intention": "ユーザーの指摘に基づき、実通信テストが正しく実行されるようにテストコードを修正するためよ。",
+    "context": "User pointed out that the integration test was ignored despite the API key being present in .env.",
+    "parentId": "5fe72cbe-9cf6-407a-8a9f-24befb4b9ea9"
+  },
+  {
+    "id": "f86528d8-92bd-4c3c-b005-0401507bbaf1",
+    "timestamp": "2025-03-31T11:22:04.595Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/llm.test.ts の実通信テストの ignore 条件を修正したわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "change_description": "Removed the 'ignore' property and modified the API key check within the test function 'fn' using write_to_file.",
+      "tool_used": "write_to_file"
+    },
+    "intention": "実通信テストが .env ファイルの API キーを正しく読み込んで実行 (または失敗) するようにするためよ。",
+    "context": "ユーザーの指摘を受け、実通信テストの ignore 条件の問題を修正した直後。",
+    "parentId": "98234d43-98b7-4026-9cd3-947632735c0e"
+  },
+  {
+    "id": "84ec3940-9605-48f9-9442-49b91689a6f1",
+    "timestamp": "2025-03-31T11:22:18.892Z",
+    "type": "error_encountered",
+    "level": "error",
+    "summary": "deno test が権限不足で失敗したわ (--allow-read が必要)。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "command": "deno test --allow-env --allow-net src/llm.test.ts",
+      "exit_code": 1,
+      "error_message": "NotCapable: Requires read access to \".env\", run again with the --allow-read flag",
+      "cause": "The test command was missing the --allow-read flag required by dotenv's loadSync to read the .env file."
+    },
+    "intention": "実通信テストの動作を確認しようとしたけれど、実行時の権限不足で失敗したわ。",
+    "context": "実通信テスト内に dotenv 読み込み処理を追加した後、テストを実行したところ。",
+    "parentId": "f86528d8-92bd-4c3c-b005-0401507bbaf1"
+  },
+  {
+    "id": "c5c79eaf-7359-4c42-9269-962b5b74fb71",
+    "timestamp": "2025-03-31T11:22:45.808Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "deno test (--allow-read 追加) が成功したわ。実通信テストも実行された。",
+    "details": {
+      "command": "deno test --allow-env --allow-net --allow-read src/llm.test.ts",
+      "exit_code": 0,
+      "output_summary": "2 passed. Both mock and integration tests passed successfully.",
+      "phase": "TDD Green (Final Verification with correct flags)"
+    },
+    "intention": "必要な権限を付与してテストを実行し、リファクタリングが完全に成功したことを確認するためよ。",
+    "context": "前回のテスト失敗 (権限不足) を受け、--allow-read フラグを追加してテストを再実行したところ。",
+    "parentId": "84ec3940-9605-48f9-9442-49b91689a6f1"
+  },
+  {
+    "id": "9fe80328-e973-406b-8ad2-2548d52ca83a",
+    "timestamp": "2025-03-31T11:23:40.503Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザーフィードバックに基づき、deno task でユニットテストとインテグレーションテストを分離する方針を決定したわ。",
+    "details": {
+      "feedback": "deno taskでテストを使い分けられるようにして",
+      "analysis": "Need to separate fast unit tests (mock) from slow/dependent integration tests (actual API call).",
+      "plan": [
+        "Prefix the integration test name in src/llm.test.ts with '[Integration]'.",
+        "Add 'test:unit' task to deno.json filtering out integration tests.",
+        "Add 'test:integration' task to deno.json filtering only integration tests with necessary permissions.",
+        "Update the default 'test' task to run unit tests."
+      ],
+      "next_step": "Modify src/llm.test.ts to rename the integration test."
+    },
+    "intention": "テスト実行の利便性を向上させ、CI/CD パイプラインなどでのテスト戦略を容易にするためよ。",
+    "context": "After successfully refactoring src/llm.ts and its tests, user requested separation of test types via deno task.",
+    "parentId": "c5c79eaf-7359-4c42-9269-962b5b74fb71"
+  },
+  {
+    "id": "33583e08-eedb-4669-834d-0e19fdac36c5",
+    "timestamp": "2025-03-31T11:24:11.917Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/llm.test.ts の実通信テスト名に [Integration] プレフィックスを追加したわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "change_description": "Added '[Integration]' prefix to the integration test name using write_to_file.",
+      "tool_used": "write_to_file"
+    },
+    "intention": "deno task でユニットテストとインテグレーションテストを区別できるようにするためよ。",
+    "context": "ユーザーからのテスト分離要求を受け、テスト名を変更した直後。",
+    "parentId": "9fe80328-e973-406b-8ad2-2548d52ca83a"
+  },
+  {
+    "id": "d4a0afae-1391-4cc2-87c4-ca1a461c6879",
+    "timestamp": "2025-03-31T11:24:49.813Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "deno.json を修正し、テストタスク (test, test:unit, test:integration) を追加したわ (コメント削除済み)。",
+    "details": {
+      "file_path": "deno.json",
+      "change_description": "Added 'test', 'test:unit', and 'test:integration' tasks to the 'tasks' object in deno.json, removing previously added comments.",
+      "tool_used": "write_to_file"
+    },
+    "intention": "deno task でユニットテストとインテグレーションテストを分離できるようにするため、および JSON フォーマットエラーを修正するためよ。",
+    "context": "前回 deno.json にコメントを含めて書き込みエラーになった後、コメントを削除して再度書き込んだ直後。",
+    "parentId": "33583e08-eedb-4669-834d-0e19fdac36c5"
+  },
+  {
+    "id": "922e97de-9991-4b6a-b7e9-45392ae836b1",
+    "timestamp": "2025-03-31T11:25:35.602Z",
+    "type": "command_execution",
+    "level": "warn",
+    "summary": "deno task test:unit を実行したが、意図せず全てのテストがフィルターされたわ。",
+    "details": {
+      "command": "deno task test:unit",
+      "exit_code": 0,
+      "output": "ok | 0 passed | 0 failed | 13 filtered out (118ms)",
+      "issue": "The filter '^(?!.*\\[Integration\\]).*$' unexpectedly filtered out all tests, including the unit tests it was supposed to run.",
+      "expected_behavior": "Should run unit tests (e.g., the mock test in src/llm.test.ts) and filter out only the integration test.",
+      "next_step": "Try running 'deno task test:integration' to check if the positive filter works."
+    },
+    "intention": "ユニットテストタスクが正しく設定されたか確認するためよ。",
+    "context": "deno.json にテストタスクを追加した後、test:unit タスクを実行したところ。",
+    "parentId": "d4a0afae-1391-4cc2-87c4-ca1a461c6879"
+  },
+  {
+    "id": "0b27d352-502e-4503-9490-c0fd4cadba9e",
+    "timestamp": "2025-03-31T11:26:10.874Z",
+    "type": "command_execution",
+    "level": "error",
+    "summary": "deno task test:integration も意図せず全てのテストをフィルターしたわ。",
+    "details": {
+      "command": "deno task test:integration",
+      "exit_code": 0,
+      "output": "ok | 0 passed | 0 failed | 13 filtered out (112ms)",
+      "issue": "The filter '\\[Integration\\]' unexpectedly filtered out all tests, including the integration test it was supposed to run.",
+      "cause_analysis": "The regex filter might be incorrect or not matching the full test name format used by Deno (which includes the file path). Both positive and negative filters failed.",
+      "next_step": "Revising the filter strategy in deno.json."
+    },
+    "intention": "インテグレーションテストタスクが正しく設定されたか確認するためよ。",
+    "context": "test:unit タスクが失敗した後、test:integration タスクを実行したところ。",
+    "parentId": "922e97de-9991-4b6a-b7e9-45392ae836b1"
+  },
+  {
+    "id": "6b64f43c-d625-4908-b19b-6ed333847c13",
+    "timestamp": "2025-03-31T11:26:45.521Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "テストフィルターが機能しないため、ユニットテストとインテグレーションテストを別ファイルに分割する方針に変更したわ。",
+    "details": {
+      "issue": "deno test --filter did not work as expected for both positive and negative matching.",
+      "new_plan": [
+        "Move mock test from src/llm.test.ts to src/llm.unit.test.ts.",
+        "Move integration test from src/llm.test.ts to src/llm.integration.test.ts.",
+        "Update deno.json tasks to use file patterns (*.unit.test.ts, *.integration.test.ts) instead of filters.",
+        "Delete the old src/llm.test.ts file."
+      ],
+      "next_step": "Read src/llm.test.ts to prepare for splitting."
+    },
+    "intention": "テストの分離を確実に行い、deno task での実行を容易にするためよ。",
+    "context": "After confirming that deno test filters were not working as intended.",
+    "parentId": "0b27d352-502e-4503-9490-c0fd4cadba9e"
+  },
+  {
+    "id": "8cbd4a14-fd82-480e-bb3c-c1edbf6a511e",
+    "timestamp": "2025-03-31T11:27:10.732Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "ユニットテストファイル src/llm.unit.test.ts を作成したわ。",
+    "details": {
+      "file_path": "src/llm.unit.test.ts",
+      "action": "create",
+      "content_description": "Moved the mock test section from src/llm.test.ts to this new file."
+    },
+    "intention": "テストをユニットテストとインテグレーションテストに分離する計画の第一歩よ。",
+    "context": "テストフィルターが機能しなかったため、ファイル分割方針に変更した後。",
+    "parentId": "6b64f43c-d625-4908-b19b-6ed333847c13"
+  },
+  {
+    "id": "3491fb0a-16ac-4271-8bbb-027b5caa3615",
+    "timestamp": "2025-03-31T11:27:34.011Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "インテグレーションテストファイル src/llm.integration.test.ts を作成したわ。",
+    "details": {
+      "file_path": "src/llm.integration.test.ts",
+      "action": "create",
+      "content_description": "Moved the integration test section from src/llm.test.ts to this new file."
+    },
+    "intention": "テストをユニットテストとインテグレーションテストに分離する計画の第二歩よ。",
+    "context": "ユニットテストファイルを分離作成した後。",
+    "parentId": "6b64f43c-d625-4908-b19b-6ed333847c13"
+  },
+  {
+    "id": "218c6003-9d97-4381-815f-4016af4e02e6",
+    "timestamp": "2025-03-31T11:28:01.014Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "deno.json を修正し、テストタスクをファイルパターン指定に変更したわ (コメント削除済み)。",
+    "details": {
+      "file_path": "deno.json",
+      "change_description": "Updated 'test', 'test:unit', and 'test:integration' tasks in deno.json to use file patterns instead of filters, and removed comments.",
+      "tool_used": "write_to_file"
+    },
+    "intention": "テストフィルターの問題を回避し、ファイル分割に基づいたテスト実行を実現するため、および JSON フォーマットエラーを修正するためよ。",
+    "context": "前回 deno.json にコメントを含めて書き込みエラーになった後、コメントを削除し、ファイルパターン指定で再度書き込んだ直後。",
+    "parentId": "6b64f43c-d625-4908-b19b-6ed333847c13"
+  },
+  {
+    "id": "ec0c1865-a4f0-420c-94e4-2c4d029f701e",
+    "timestamp": "2025-03-31T11:28:22.039Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "deno task test:unit が成功し、ユニットテストのみが実行されたわ。",
+    "details": {
+      "command": "deno task test:unit",
+      "exit_code": 0,
+      "output_summary": "1 passed. Only src/llm.unit.test.ts was executed.",
+      "verification": "File pattern matching in deno.json task works correctly for unit tests."
+    },
+    "intention": "deno.json で設定したユニットテストタスクが正しく動作することを確認するためよ。",
+    "context": "deno.json をファイルパターン指定に修正した後、test:unit タスクを実行したところ。",
+    "parentId": "218c6003-9d97-4381-815f-4016af4e02e6"
+  },
+  {
+    "id": "a53fa78d-01db-48c6-8fb8-95faa2c3422b",
+    "timestamp": "2025-03-31T11:28:42.891Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "deno task test:integration が成功し、インテグレーションテストのみが実行されたわ。",
+    "details": {
+      "command": "deno task test:integration",
+      "exit_code": 0,
+      "output_summary": "1 passed. Only src/llm.integration.test.ts was executed.",
+      "verification": "File pattern matching in deno.json task works correctly for integration tests."
+    },
+    "intention": "deno.json で設定したインテグレーションテストタスクが正しく動作することを確認するためよ。",
+    "context": "test:unit タスクの成功確認後、test:integration タスクを実行したところ。",
+    "parentId": "ec0c1865-a4f0-420c-94e4-2c4d029f701e"
+  },
+  {
+    "id": "8ad5c910-be4e-4f1c-be78-056a24982926",
+    "timestamp": "2025-03-31T11:29:14.945Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "不要になった元のテストファイル src/llm.test.ts を削除したわ。",
+    "details": {
+      "file_path": "src/llm.test.ts",
+      "action": "delete",
+      "command": "rm src/llm.test.ts"
+    },
+    "intention": "テストファイルの分割が完了したため、古いファイルをクリーンアップするためよ。",
+    "context": "ユニットテストとインテグレーションテストを別ファイルに分割し、deno.json のタスク設定も完了した後。",
+    "parentId": "a53fa78d-01db-48c6-8fb8-95faa2c3422b"
+  },
+  {
+    "id": "28d44076-b480-4221-af27-03f0a6194969",
+    "timestamp": "2025-03-31T11:30:28.082Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/cli.test.ts を src/cli.unit.test.ts にリネームしたわ。",
+    "details": {
+      "action": "rename",
+      "source": "src/cli.test.ts",
+      "destination": "src/cli.unit.test.ts",
+      "command": "mv src/cli.test.ts src/cli.unit.test.ts"
+    },
+    "intention": "テストファイルの命名規則を統一するためよ。",
+    "context": "ユーザー指示に基づき、テストファイルの命名規則統一を進めているところ。",
+    "parentId": "6b64f43c-d625-4908-b19b-6ed333847c13"
+  },
+  {
+    "id": "f6c619f0-6881-4061-8c0f-a52171fceb3b",
+    "timestamp": "2025-03-31T11:30:43.726Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "src/prompt.test.ts を src/prompt.unit.test.ts にリネームしたわ。",
+    "details": {
+      "action": "rename",
+      "source": "src/prompt.test.ts",
+      "destination": "src/prompt.unit.test.ts",
+      "command": "mv src/prompt.test.ts src/prompt.unit.test.ts"
+    },
+    "intention": "テストファイルの命名規則を統一するためよ。",
+    "context": "src/cli.test.ts のリネーム後。",
+    "parentId": "28d44076-b480-4221-af27-03f0a6194969"
+  },
+  {
+    "id": "6e4fbc57-6b5e-40fe-943b-e5d528d63302",
+    "timestamp": "2025-03-31T11:31:15.382Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "スナップショットファイル src/__snapshots__/prompt.test.ts.snap をリネームしたわ。",
+    "details": {
+      "action": "rename",
+      "source": "src/__snapshots__/prompt.test.ts.snap",
+      "destination": "src/__snapshots__/prompt.unit.test.ts.snap",
+      "command": "mv src/__snapshots__/prompt.test.ts.snap src/__snapshots__/prompt.unit.test.ts.snap"
+    },
+    "intention": "テストファイルのリネームに合わせて、関連するスナップショットファイル名も更新するためよ。",
+    "context": "src/prompt.test.ts をリネームした後。",
+    "parentId": "f6c619f0-6881-4061-8c0f-a52171fceb3b"
+  },
+  {
+    "id": "aa14d773-209b-453a-b088-984afc40f22f",
+    "timestamp": "2025-03-31T11:31:40.603Z",
+    "type": "error_encountered",
+    "level": "error",
+    "summary": "deno task test (unit) が権限不足で失敗したわ (--allow-read が必要)。",
+    "details": {
+      "command": "deno task test",
+      "exit_code": 1,
+      "failed_tests": [
+        "generatePrompt snapshot test - Basic",
+        "generatePrompt snapshot test - Defaults",
+        "generatePrompt snapshot test - Empty Fields"
+      ],
+      "error_message": "NotCapable: Requires read access to \"/Users/annenpolka/junks/sikakumaru/templates/exam-prompt.eta\", run again with the --allow-read flag",
+      "cause": "The unit tests for src/prompt.ts require read access to load the Eta template file, but the 'test' and 'test:unit' tasks in deno.json were missing the --allow-read flag."
+    },
+    "intention": "リネーム後のユニットテストが正しく実行されるか確認しようとしたけれど、ファイル読み込み権限不足で失敗したわ。",
+    "context": "テストファイルのリネームとスナップショットのリネーム後、ユニットテストを実行したところ。",
+    "parentId": "f6c619f0-6881-4061-8c0f-a52171fceb3b"
+  },
+  {
+    "id": "d29f26ea-4187-4444-8789-630130024099",
+    "timestamp": "2025-03-31T11:32:12.622Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "deno.json を修正し、ユニットテストタスクに --allow-read を追加したわ (コメント削除済み)。",
+    "details": {
+      "file_path": "deno.json",
+      "change_description": "Added --allow-read flag to 'test' and 'test:unit' tasks in deno.json and removed comments.",
+      "tool_used": "write_to_file"
+    },
+    "intention": "ユニットテスト実行時の権限不足エラーを解消するため、および JSON フォーマットエラーを修正するためよ。",
+    "context": "前回 deno.json にコメントを含めて書き込みエラーになった後、コメントを削除し、--allow-read を追加して再度書き込んだ直後。",
+    "parentId": "aa14d773-209b-453a-b088-984afc40f22f"
+  },
+  {
+    "id": "239cf4d9-dddd-4d8a-9f9a-9e4d700e003a",
+    "timestamp": "2025-03-31T11:32:38.880Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "deno task test (unit) が成功し、リネーム後のユニットテストがすべてパスしたわ。",
+    "details": {
+      "command": "deno task test",
+      "exit_code": 0,
+      "output_summary": "11 passed. All unit tests (*.unit.test.ts) were executed and passed.",
+      "verification": "Renaming tests and updating deno.json tasks with file patterns and --allow-read flag was successful."
+    },
+    "intention": "ファイルリネームと deno.json 修正後、ユニットテストタスクが正しく動作することを確認するためよ。",
+    "context": "deno.json に --allow-read を追加した後、test タスクを実行したところ。",
+    "parentId": "d29f26ea-4187-4444-8789-630130024099"
+  },
+  {
+    "id": "ca1d647c-be7f-40e2-844f-f14ec303a6de",
+    "timestamp": "2025-03-31T11:33:09.163Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "リファクタリングとテスト関連の変更をステージングしたわ。",
+    "details": {
+      "command": "git add deno.json src/",
+      "staged_files_summary": "Staged changes in deno.json, src/llm.ts, added new test files (*.unit.test.ts, *.integration.test.ts, snapshot), and staged deletions of old test files."
+    },
+    "intention": "一連の作業内容をコミットする準備のためよ。",
+    "context": "git status で変更内容を確認した後。",
+    "parentId": "6b64f43c-d625-4908-b19b-6ed333847c13"
+  },
+  {
+    "id": "90a75646-2be0-4725-8c42-e8c574abfcd5",
+    "timestamp": "2025-03-31T11:33:44.211Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "一連のリファクタリングとテスト修正をコミットしたわ。",
+    "details": {
+      "command": "git commit -m \"refactor(llm): Introduce DI and separate tests\n\n- Refactor src/llm.ts to accept LLM client via dependency injection.\n- Remove direct dotenv dependency from src/llm.ts.\n- Split src/llm.test.ts into src/llm.unit.test.ts and src/llm.integration.test.ts.\n- Rename other test files (*.test.ts -> *.unit.test.ts) for consistency.\n- Update deno.json tasks (test, test:unit, test:integration) to use file patterns.\"",
+      "commit_hash": "9e0365d",
+      "commit_message": "refactor(llm): Introduce DI and separate tests\n\n- Refactor src/llm.ts to accept LLM client via dependency injection.\n- Remove direct dotenv dependency from src/llm.ts.\n- Split src/llm.test.ts into src/llm.unit.test.ts and src/llm.integration.test.ts.\n- Rename other test files (*.test.ts -> *.unit.test.ts) for consistency.\n- Update deno.json tasks (test, test:unit, test:integration) to use file patterns."
+    },
+    "intention": "ここまでの作業内容をバージョン管理下に置くためよ。",
+    "context": "すべての変更をステージングした後。",
+    "parentId": "ca1d647c-be7f-40e2-844f-f14ec303a6de"
   }
 ]
