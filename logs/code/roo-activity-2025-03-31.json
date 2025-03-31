@@ -4248,5 +4248,131 @@
       "52a95872-dc8a-44ce-b0dd-f0579e6d7d15",
       "bfd89370-6e92-4098-9eca-8599a0cba0e9"
     ]
+  },
+  {
+    "id": "5e0c9989-8066-4a8e-a419-4d190083c6fa",
+    "timestamp": "2025-03-31T12:53:37.690Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "git status を実行してリポジトリの状態を確認",
+    "details": {
+      "command": "git status",
+      "exit_code": 0,
+      "output": "On branch main\nYour branch is up to date with 'origin/main'.\n\nChanges not staged for commit:\n  (use \"git add <file>...\" to update what will be committed)\n  (use \"git restore <file>...\" to discard changes in working directory)\n\tmodified:   logs/boomerang/roo-activity-2025-03-31.json\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")\n%"
+    },
+    "intention": "作業開始前にリポジトリの現在の状態（ブランチ、変更点）を確認するため。",
+    "context": "ユーザーからの PoC 機能統合タスクの指示を受け、.clinerules に従った初期確認ステップとして実行。"
+  },
+  {
+    "id": "01fcd005-a34a-4378-97d8-891ef076ea1a",
+    "timestamp": "2025-03-31T12:55:40.365Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "main.ts を修正し、PoC 機能 (CLI -> Prompt -> LLM -> Console) を統合",
+    "details": {
+      "tool": "write_to_file",
+      "file_path": "main.ts",
+      "outcome": "Success",
+      "changes_summary": "型エラーを修正し、CLIOptions のインポート元変更、LLMクライアント初期化と呼び出しの引数を修正。"
+    },
+    "intention": "next-steps.md の指示に基づき、個別に実装された機能を main.ts に統合するため。",
+    "context": "前回の write_to_file で発生した型エラーを分析し、関連ファイルの定義を確認した上で修正を実施。",
+    "relatedIds": [
+      "5e0c9989-8066-4a8e-a419-4d190083c6fa"
+    ]
+  },
+  {
+    "id": "12fa4d72-1dd3-4502-95f8-fa138c2bcdf0",
+    "timestamp": "2025-03-31T12:56:50.655Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "main.ts 内の API キー名を GEMINI_API_KEY に統一",
+    "details": {
+      "tool": "search_and_replace",
+      "file_path": "main.ts",
+      "search_term": "GOOGLE_API_KEY",
+      "replace_term": "GEMINI_API_KEY",
+      "outcome": "Success"
+    },
+    "intention": "ユーザーの指示に基づき、使用する環境変数名を統一するため。",
+    "context": "PoC 機能統合後のユーザーフィードバックを受けて修正。",
+    "parentId": "01fcd005-a34a-4378-97d8-891ef076ea1a"
+  },
+  {
+    "id": "7413af17-f870-46fa-9585-246452135348",
+    "timestamp": "2025-03-31T12:57:33.386Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "main.ts の動作確認を実行",
+    "details": {
+      "command": "deno run -A main.ts -q \"基本情報技術者試験\" -f \"テクノロジ系\" -f \"マネジメント系\" -c 3 -o output.json",
+      "exit_code": 0,
+      "output_summary": "正常に実行され、LLM から3つの試験問題が生成・出力された。"
+    },
+    "intention": "修正後の main.ts が PoC 機能 (CLI -> Prompt -> LLM -> Console) を正しく実行できるか確認するため。",
+    "context": "API キー名を GEMINI_API_KEY に統一した後、ユーザーの指示に基づき動作確認を実施。",
+    "parentId": "12fa4d72-1dd3-4502-95f8-fa138c2bcdf0"
+  },
+  {
+    "id": "999e6d25-4799-47c6-8b6a-19eca0ddc1e6",
+    "timestamp": "2025-03-31T12:59:09.967Z",
+    "type": "code_generation",
+    "level": "info",
+    "summary": "main.ts をリファクタリングし、テスト可能な runMainLogic 関数をエクスポート",
+    "details": {
+      "tool": "write_to_file",
+      "file_path": "main.ts",
+      "outcome": "Success",
+      "changes_summary": "if (import.meta.main) ブロック内のロジックを runMainLogic 関数に切り出し、エクスポートした。"
+    },
+    "intention": "main.ts の主要ロジックに対するインテグレーションテストを作成可能にするため。",
+    "context": "ユーザーからのテスト作成指示を受け、テスト容易性を向上させるための準備として実施。",
+    "parentId": "7413af17-f870-46fa-9585-246452135348"
+  },
+  {
+    "id": "268fbda0-cb2b-4e6a-b847-31c36f11345e",
+    "timestamp": "2025-03-31T12:59:31.240Z",
+    "type": "code_generation",
+    "level": "info",
+    "summary": "main.ts のエラーハンドリングで Deno.exit(1) を有効化",
+    "details": {
+      "tool": "search_and_replace",
+      "file_path": "main.ts",
+      "search_term": "// Deno.exit(1);",
+      "replace_term": "Deno.exit(1);",
+      "outcome": "Success"
+    },
+    "intention": "CLIツールとして、エラー発生時に非ゼロの終了コードで終了する標準的な動作に戻すため。",
+    "context": "main.ts のリファクタリング後、テスト作成の準備として実施。",
+    "parentId": "999e6d25-4799-47c6-8b6a-19eca0ddc1e6"
+  },
+  {
+    "id": "8d5f060f-8dcc-4921-b6fb-797c5abd56e9",
+    "timestamp": "2025-03-31T13:30:17.682Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "PoC 機能統合の変更をコミット",
+    "details": {
+      "commands_executed": [
+        "git status",
+        "git restore --staged logs/boomerang/roo-activity-2025-03-31.json logs/code/roo-activity-2025-03-31.json",
+        "git add -f .env",
+        "git commit -m \"feat: Integrate PoC features (CLI -> Prompt -> LLM -> Console)\""
+      ],
+      "commit_hash": "02718c0",
+      "staged_files_in_commit": [
+        "main.ts",
+        ".env"
+      ],
+      "deleted_files_in_commit": [
+        "main_test.ts"
+      ],
+      "unstaged_files_after_commit": [
+        "logs/boomerang/roo-activity-2025-03-31.json",
+        "logs/code/roo-activity-2025-03-31.json"
+      ]
+    },
+    "intention": "ユーザーの指示に基づき、PoC 機能統合の変更をバージョン管理下に置くため。",
+    "context": "前のタスクで完了した PoC 機能統合 (main.ts への統合、.env の API キー名統一) を反映させる一連の Git コミット作業。"
   }
 ]
