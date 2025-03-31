@@ -4021,5 +4021,26 @@
     "intention": "最終的なテスト結果を確認するためよ。",
     "context": "main.ts を修正し、再度テストを実行した後。",
     "parentId": "25fd69cc-69ff-4908-a3b1-5260dd043baf"
+  },
+  {
+    "id": "289ec5dd-1ea1-4ec3-948e-cd8d2109e847",
+    "timestamp": "2025-03-31T12:05:10.762Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "Git コミットの実行",
+    "details": {
+      "command": "git commit -m \"refactor(test): Improve CLI test coverage and assertions\"",
+      "staged_files": [
+        "deno.json",
+        "logs/boomerang/roo-activity-2025-03-31.json",
+        "logs/code/roo-activity-2025-03-31.json",
+        "main.ts",
+        "src/cli.unit.test.ts"
+      ],
+      "commit_hash": "49f1f34",
+      "commit_message": "refactor(test): Improve CLI test coverage and assertions"
+    },
+    "intention": "CLIテストの改善結果と関連する変更をGitリポジトリに記録するため。",
+    "context": "ユーザーからの指示に基づき、src/cli.unit.test.ts のテスト網羅性向上と関連修正の結果をバージョン管理下に置く。"
   }
 ]
