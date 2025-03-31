@@ -73,7 +73,6 @@ describe("defineCommand", () => {
         "--count": "10",
         "--output": "output.json",
       };
-      // deno-lint-ignore no-dynamic-delete
       delete allArgs[missing as keyof typeof allArgs];
       return Object.entries(allArgs).flat();
     };

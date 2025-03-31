@@ -900,5 +900,95 @@
     "intention": "ユーザーの指示に基づき、コードクリーンナップの結果をコミットする準備として、対象ファイルを確認するためよ。",
     "context": "コードクリーンナップ完了後、ユーザーからコミットの指示があった段階だわ。",
     "parentId": "078c7958-5707-4057-b8d8-9bca55dfb178"
+  },
+  {
+    "id": "7b8d4a2f-633c-44f7-866d-dc5d4a67a89e",
+    "timestamp": "2025-03-31T12:15:34.076Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Code モードによるコードクリーンナップ結果のコミット完了を確認したわ。",
+    "details": {
+      "subtask_result_summary": "Code モードがコードクリーンナップの変更をコミットした。",
+      "commit_hash": "d03ef69"
+    },
+    "intention": "ユーザー指示によるコミット作業の完了を確認し、リファクタリングフェーズの完了を記録するためよ。",
+    "context": "Code モードがコードクリーンナップ結果のコミットを実行し、完了を報告した直後だわ。",
+    "parentId": "3faf4604-171b-45ee-886f-c53f86d80206"
+  },
+  {
+    "id": "609d95aa-f9b9-4e3e-9e11-2e34a90e42d5",
+    "timestamp": "2025-03-31T12:15:51.478Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "リファクタリング完了を受け、PoC 機能の統合タスクを Code モードに委任することを決定したわ。",
+    "details": {
+      "reasoning": "コードレビューに基づくリファクタリングが完了し、次のステップとして PoC の機能を統合するためよ。",
+      "task_scope": "CLI 引数解析、プロンプト生成、LLM 呼び出しの機能を main.ts で連携させ、結果をコンソールに出力する。",
+      "delegated_mode": "code",
+      "parent_log_id": "7b8d4a2f-633c-44f7-866d-dc5d4a67a89e"
+    },
+    "intention": "PoC の実現可能性を示すため、個別に実装・リファクタリングされた機能を統合し、一連の動作を確認するわ。",
+    "context": "コードクリーンナップのコミット完了後、次のステップとして機能統合を選択した段階よ。"
+  },
+  {
+    "id": "19e0fd0a-26a7-4096-ab7c-06148a34ae8d",
+    "timestamp": "2025-03-31T12:16:45.392Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指示に基づき、リファクタリング完了をもって今回の作業を終了することを決定したわ。",
+    "details": {
+      "user_feedback": "いや、ここで一区切りにする。記録を残して",
+      "reasoning": "機能統合タスクはキャンセルされ、ユーザーは現時点での作業終了を希望したため。",
+      "completed_work_summary": "PoC実装 (CLI, Prompt, LLM)、コードレビュー、レビューに基づくリファクタリング (Prompt外部化/Engine導入, DI導入, 型定義強化, テスト網羅性向上, コードクリーンナップ) を完了。",
+      "next_step": "attempt_completion で作業結果を報告する。"
+    },
+    "intention": "ユーザーの意向に従い、一連の作業を完了として報告する準備をするためよ。",
+    "context": "機能統合タスクの依頼がユーザーによってキャンセルされた直後よ。",
+    "parentId": "7b8d4a2f-633c-44f7-866d-dc5d4a67a89e"
+  },
+  {
+    "id": "0994b701-08a9-4091-b339-6cdb15ba4151",
+    "timestamp": "2025-03-31T12:17:27.640Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指示に基づき、今後の作業予定 (PoC 機能統合) をドキュメント化するタスクを Architect モードに委任することを決定したわ。",
+    "details": {
+      "user_request": "作業予定をドキュメントにしておいて",
+      "planned_next_step": "PoC 機能統合 (CLI -> Prompt -> LLM -> Console)",
+      "documentation_target": "新規ファイル `next-steps.md` または既存ファイル `design-plan.md` への追記",
+      "delegated_mode": "architect"
+    },
+    "intention": "今後の開発計画を明確にし、記録として残すため、ドキュメント作成タスクを委任するわ。",
+    "context": "一連のリファクタリング完了後、ユーザーから作業予定のドキュメント化を指示された段階よ。",
+    "parentId": "7b8d4a2f-633c-44f7-866d-dc5d4a67a89e"
+  },
+  {
+    "id": "fe92bc76-1768-4e15-ba78-eb955c95040d",
+    "timestamp": "2025-03-31T12:25:32.719Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Architect モードによる作業予定ドキュメント作成完了を確認したわ。",
+    "details": {
+      "subtask_result_summary": "Architect モードが今後の作業予定 (PoC 機能統合) を next-steps.md にドキュメント化した。",
+      "created_file": "next-steps.md"
+    },
+    "intention": "委任したドキュメント作成タスクの完了を確認するためよ。",
+    "context": "Architect モードが作業予定のドキュメント化を完了し、結果を報告した直後だわ。",
+    "parentId": "0994b701-08a9-4091-b339-6cdb15ba4151"
+  },
+  {
+    "id": "40a525d6-3b15-4c5b-b85c-9a8bd1ead510",
+    "timestamp": "2025-03-31T12:25:50.227Z",
+    "type": "file_operation",
+    "level": "info",
+    "summary": "Architect モードが作成した作業予定ドキュメント `next-steps.md` の内容を確認したわ。",
+    "details": {
+      "file_path": "next-steps.md",
+      "operation": "read",
+      "content_summary": "PoC 機能統合 (CLI -> Prompt -> LLM -> Console) の具体的な作業手順、担当モードなどが記載されている。"
+    },
+    "intention": "ユーザー指示で作成された作業予定ドキュメントの内容を確認し、次のアクションを決定するためよ。",
+    "context": "Architect モードによるドキュメント作成完了後、read_file ツールで内容を読み込んだ直後だわ。",
+    "parentId": "fe92bc76-1768-4e15-ba78-eb955c95040d"
   }
 ]
