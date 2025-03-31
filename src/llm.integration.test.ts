@@ -26,7 +26,7 @@ Deno.test({
     }
     const actualClient = new ChatGoogleGenerativeAI({
       apiKey: apiKey,
-      model: "gemini-1.5-pro",
+      model: "gemini-2.5-pro-exp-03-25",
     });
 
     const prompt = "Hello";
