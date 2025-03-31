@@ -559,5 +559,96 @@
     "intention": "ユーザーのフィードバックを反映し、安全な Git 運用を確保するため、コミット対象を修正するわ。",
     "context": "Code モードへのコミットタスク依頼がユーザーによって拒否された直後よ。",
     "parentId": "1e140ebb-1c4f-4929-889f-6d557bd44ae5"
+  },
+  {
+    "id": "09e6a7b1-9049-4da5-9429-1c91ba79bfa0",
+    "timestamp": "2025-03-31T10:24:53.929Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Code モードによるコミット完了を確認したわ。",
+    "details": {
+      "subtask_result_summary": "Code モードが .env を除外し、PoC ステップ 2c の実装とコードレビュー結果を含む変更をコミットした。",
+      "committed_files_approx": [
+        "deno.json",
+        "logs/boomerang/roo-activity-2025-03-31.json",
+        "logs/code/roo-activity-2025-03-31.json",
+        "code-review-summary.md",
+        "src/llm.ts",
+        "src/llm.test.ts"
+      ],
+      "commit_message_used": "feat: Implement PoC step 2c (LLM connection) and add code review (or similar)"
+    },
+    "intention": "ユーザー指示によるコミット作業の完了を確認し、プロジェクトの状態を記録するためよ。",
+    "context": "Code モードが .env を除外してコミットを実行し、完了を報告した直後だわ。",
+    "parentId": "e237a79e-347e-47d7-bd3d-d811539da1ac"
+  },
+  {
+    "id": "5fd89a6b-abb8-48aa-8b2e-5e22b11d21dc",
+    "timestamp": "2025-03-31T10:26:08.646Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指示に基づき、最初のリファクタリングタスクとしてプロンプト処理の改善 (外部ファイル化・テンプレートエンジン導入) を Code モードに委任することを決定したわ。",
+    "details": {
+      "user_request": "リファクタリングに着手する。ただし、一度にたった一つの改善にとどめて",
+      "refactoring_target": "src/prompt.ts (プロンプト生成)",
+      "reasoning": "コードレビューで最も重大な課題と指摘されたため、最初に改善する。",
+      "improvement_details": "ハードコードされたプロンプトを外部ファイル化し、テンプレートエンジンを導入する。",
+      "development_method": "TDD",
+      "delegated_mode": "code",
+      "parent_log_id": "09e6a7b1-9049-4da5-9429-1c91ba79bfa0"
+    },
+    "intention": "コードレビューで指摘された重大な問題点に対処し、コード品質を段階的に改善するため、最初のリファクタリングタスクを委任するわ。",
+    "context": "コードレビュー結果を確認し、ユーザーがリファクタリングを一度に一つずつ進めることを選択した直後よ。"
+  },
+  {
+    "id": "07efe3d9-c5bb-47c4-8ce1-636569d94e61",
+    "timestamp": "2025-03-31T11:00:17.849Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Code モードによる `src/prompt.ts` のリファクタリング完了を確認したわ。",
+    "details": {
+      "subtask_result_summary": "Code モードが src/prompt.ts をリファクタリング。プロンプト外部ファイル化 (templates/exam-prompt.eta)、eta テンプレートエンジン導入、スナップショットテストによるテスト改善を実施。",
+      "modified_files": [
+        "src/prompt.ts",
+        "src/prompt.test.ts",
+        "deno.json"
+      ],
+      "created_files": [
+        "templates/exam-prompt.eta"
+      ],
+      "resolved_review_issues": [
+        "プロンプトのハードコード",
+        "テンプレートエンジン不使用",
+        "プロンプトテストのアサーション脆弱性"
+      ],
+      "next_potential_step": "他のコードレビュー指摘事項 (DI導入、テスト改善等) への対応。"
+    },
+    "intention": "委任したリファクタリングタスクの完了を確認し、コード品質改善の進捗を把握するためよ。",
+    "context": "Code モードが src/prompt.ts のリファクタリングを完了し、結果を報告した直後だわ。",
+    "parentId": "5fd89a6b-abb8-48aa-8b2e-5e22b11d21dc"
+  },
+  {
+    "id": "3f611d3a-fc2c-454a-b9a2-7e1feca55615",
+    "timestamp": "2025-03-31T11:02:30.496Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "git status コマンドを実行し、プロンプトリファクタリング後のコミット対象を確認したわ。",
+    "details": {
+      "command": "git status",
+      "output": "On branch main\nYour branch is ahead of 'origin/main' by 2 commits.\n  (use \"git push\" to publish your local commits)\n\nChanges not staged for commit:\n  (use \"git add <file>...\" to update what will be committed)\n  (use \"git restore <file>...\" to discard changes in working directory)\n\tmodified:   deno.json\n\tmodified:   logs/boomerang/roo-activity-2025-03-31.json\n\tmodified:   logs/code/roo-activity-2025-03-31.json\n\tmodified:   src/prompt.test.ts\n\tmodified:   src/prompt.ts\n\tmodified:   src/types.ts\n\nUntracked files:\n  (use \"git add <file>...\" to include in what will be committed)\n\tsrc/__snapshots__/\n\ttemplates/\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")",
+      "identified_changes": [
+        "modified: deno.json",
+        "modified: logs/boomerang/roo-activity-2025-03-31.json",
+        "modified: logs/code/roo-activity-2025-03-31.json",
+        "modified: src/prompt.test.ts",
+        "modified: src/prompt.ts",
+        "modified: src/types.ts",
+        "untracked: src/__snapshots__/",
+        "untracked: templates/"
+      ]
+    },
+    "intention": "ユーザーの指示に基づき、リファクタリング結果をコミットする準備として、対象ファイルを確認するためよ。",
+    "context": "プロンプトリファクタリング完了後、ユーザーからコミットの指示があった段階だわ。",
+    "parentId": "07efe3d9-c5bb-47c4-8ce1-636569d94e61"
   }
 ]
