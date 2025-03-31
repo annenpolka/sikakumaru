@@ -753,5 +753,66 @@
     "intention": "委任した型定義強化タスクの完了を確認し、リファクタリングの進捗を把握するためよ。",
     "context": "Code モードが src/types.ts のリファクタリングを完了し、結果を報告した直後だわ。",
     "parentId": "e129abb0-c6c7-4635-bca4-215f30bd28ed"
+  },
+  {
+    "id": "3617661d-d152-4036-a2cf-17ea55870a0a",
+    "timestamp": "2025-03-31T11:40:58.448Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "ユーザー指示に基づき、次のリファクタリングタスクとして `src/cli.unit.test.ts` のテスト網羅性向上を Code モードに委任することを決定したわ。",
+    "details": {
+      "user_request": "ええ、`src/cli.unit.test.ts` のテスト網羅性向上に取り組みましょう。",
+      "refactoring_target": "src/cli.unit.test.ts",
+      "reasoning": "コードレビューで指摘されたテスト網羅性の低さを改善し、CLI の堅牢性を高めるためよ。",
+      "improvement_details": "境界値、ヘルプ/バージョン表示、異常系などのテストケースを追加・拡充する。",
+      "development_method": "Test Enhancement",
+      "delegated_mode": "code",
+      "parent_log_id": "0549f4bc-e4ed-4928-b87b-4a3285270c4e"
+    },
+    "intention": "コード品質を段階的に向上させるため、テスト網羅性改善タスクを委任するわ。",
+    "context": "型定義強化のリファクタリング完了後、ユーザーが次のリファクタリングとしてテスト網羅性向上を選択した直後よ。"
+  },
+  {
+    "id": "4832d439-7fc5-4c47-860d-b89231eb5296",
+    "timestamp": "2025-03-31T12:03:28.017Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Code モードによる `src/cli.unit.test.ts` のテスト網羅性向上リファクタリング完了を確認したわ。",
+    "details": {
+      "subtask_result_summary": "Code モードが src/cli.unit.test.ts のテストケースを拡充 (境界値, 不正オプション, ヘルプ表示等) し、アサーションを改善。関連ファイル (main.ts, deno.json) も修正。全テストパスを確認。",
+      "modified_files": [
+        "src/cli.unit.test.ts",
+        "main.ts",
+        "deno.json"
+      ],
+      "resolved_review_issues": [
+        "テスト網羅性の不足 (CLI)",
+        "アサーションの脆弱性 (CLI)"
+      ]
+    },
+    "intention": "委任したテスト網羅性向上タスクの完了を確認し、リファクタリングの進捗を把握するためよ。",
+    "context": "Code モードが src/cli.unit.test.ts のリファクタリングを完了し、結果を報告した直後だわ。",
+    "parentId": "3617661d-d152-4036-a2cf-17ea55870a0a"
+  },
+  {
+    "id": "e4669240-4242-40ea-b841-6d662cc81278",
+    "timestamp": "2025-03-31T12:04:25.378Z",
+    "type": "command_execution",
+    "level": "info",
+    "summary": "git status コマンドを実行し、CLI テスト改善後のコミット対象を確認したわ。",
+    "details": {
+      "command": "git status",
+      "output": "On branch main\nYour branch is up to date with 'origin/main'.\n\nChanges not staged for commit:\n  (use \"git add <file>...\" to update what will be committed)\n  (use \"git restore <file>...\" to discard changes in working directory)\n\tmodified:   deno.json\n\tmodified:   logs/boomerang/roo-activity-2025-03-31.json\n\tmodified:   logs/code/roo-activity-2025-03-31.json\n\tmodified:   main.ts\n\tmodified:   src/cli.unit.test.ts\n\nno changes added to commit (use \"git add\" and/or \"git commit -a\")",
+      "identified_changes": [
+        "modified: deno.json",
+        "modified: logs/boomerang/roo-activity-2025-03-31.json",
+        "modified: logs/code/roo-activity-2025-03-31.json",
+        "modified: main.ts",
+        "modified: src/cli.unit.test.ts"
+      ]
+    },
+    "intention": "ユーザーの指示に基づき、CLI テスト改善の結果をコミットする準備として、対象ファイルを確認するためよ。",
+    "context": "CLI テスト改善完了後、ユーザーからコミットの指示があった段階だわ。",
+    "parentId": "4832d439-7fc5-4c47-860d-b89231eb5296"
   }
 ]

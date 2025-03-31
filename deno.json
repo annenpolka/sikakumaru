@@ -1,8 +1,8 @@
 {
   "tasks": {
     "dev": "deno run --watch main.ts",
-    "test": "deno test --allow-read src/**/*.unit.test.ts",
-    "test:unit": "deno test --allow-read src/**/*.unit.test.ts",
+    "test": "deno test --allow-read --allow-run src/**/*.unit.test.ts",
+    "test:unit": "deno test --allow-read --allow-run src/**/*.unit.test.ts",
     "test:integration": "deno test --allow-env --allow-net --allow-read src/**/*.integration.test.ts"
   },
   "imports": {
