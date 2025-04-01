@@ -28,5 +28,21 @@
     "intention": "調査結果を具体的なコード変更に反映させる",
     "context": "askモードによる調査完了報告を受け、次のステップとして実装タスクをcodeモードに委任した。",
     "parentId": "375e0edc-612f-4d5d-9802-c06dd06881e2"
+  },
+  {
+    "id": "2c16aa87-118d-4d0a-8d03-e4904f59ff42",
+    "timestamp": "2025-04-01T01:29:05.525Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "main.ts の修正タスクを code モードに委任",
+    "details": {
+      "delegated_mode": "code",
+      "task_description": "ユーザーフィードバックに基づき、main.ts で callLLMForJson を使用するように修正するサブタスク。",
+      "reasoning": "コード変更には code モードが最適と判断したため。",
+      "related_feedback": "main.ts も合わせて改修して"
+    },
+    "intention": "アプリケーション全体で新しい JSON 出力機能を利用可能にする",
+    "context": "code モードによる JSON 出力機能の実装完了後、ユーザーからのフィードバックを受けて main.ts の修正を委任した。",
+    "parentId": "cd4d4f7b-afc1-468a-8779-89f265723af6"
   }
 ]
