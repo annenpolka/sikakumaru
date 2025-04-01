@@ -1,0 +1,126 @@
+[
+  {
+    "id": "6dbd06ff-c352-4044-a0a7-75a828101749",
+    "timestamp": "2025-04-01T00:55:20.748Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Gemini APIのJSON出力方法に関する調査を開始",
+    "details": {
+      "task_description": "Gemini API (特にLangChain/Deno環境) でJSON形式の出力を得るための最適な方法を調査する。",
+      "investigation_points": [
+        "Gemini API native JSON output features (response_mime_type, Function Calling)",
+        "LangChain (Deno) methods for structured JSON output (Output Parsers, Function Calling integration)",
+        "Prompt engineering techniques for JSON output"
+      ],
+      "constraints": "Report investigation results only via attempt_completion. No code changes."
+    },
+    "intention": "ユーザーの指示に基づき、Gemini APIからのJSON出力に関する調査を開始する。",
+    "context": "ユーザーからのサブタスク指示を受け、調査計画を立てた直後。"
+  },
+  {
+    "id": "34a3ee9b-bc6e-4fb2-a20d-65fcac8f7bfe",
+    "timestamp": "2025-04-01T00:56:46.772Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Gemini APIネイティブのJSON出力機能に関する調査結果を記録",
+    "details": {
+      "tool_used": "perplexity-server.get_documentation",
+      "query": "Google Gemini API JSON output",
+      "findings": {
+        "response_mime_type": "Exists ('application/json'). Used to enforce JSON format.",
+        "response_schema": "Exists (OpenAPI Schema subset). Used to define expected JSON structure.",
+        "function_calling": "Exists (Python SDK only). Another way to get structured output."
+      },
+      "sources": [
+        "https://ai.google.dev/gemini-api/docs/structured-output",
+        "https://firebase.google.com/docs/vertex-ai/structured-output",
+        "https://ai.google.dev/gemini-api/docs/function-calling"
+      ]
+    },
+    "intention": "Gemini APIのJSON出力に関する調査の第一段階の結果を記録する。",
+    "context": "Gemini APIのネイティブ機能に関する調査が完了したため。",
+    "parentId": "6dbd06ff-c352-4044-a0a7-75a828101749"
+  },
+  {
+    "id": "07a92d48-7ac6-42ef-a4e5-f1c9804b788d",
+    "timestamp": "2025-04-01T00:57:34.632Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "LangChain.jsのJSON出力調査方針を修正",
+    "details": {
+      "reason": "ユーザーからのフィードバックに基づき、Deno環境特有の考慮を外し、一般的なLangChain.js (@langchain/google-genai, @langchain/core) でのJSON出力ハンドリングに焦点を当てる。",
+      "previous_query_context": "Focus on methods within LangChain.js (specifically using @langchain/google-genai and @langchain/core in a Deno environment) for handling structured JSON output from Gemini. Include details on Output Parsers and Function Calling integration.",
+      "new_query_context": "Focus on methods within LangChain.js (using @langchain/google-genai and @langchain/core) for handling structured JSON output from Gemini. Include details on Output Parsers and Function Calling integration."
+    },
+    "intention": "ユーザーのフィードバックを反映し、より適切な調査範囲を設定する。",
+    "context": "LangChain.jsのJSON出力に関する調査ツール実行前に、ユーザーから調査範囲の修正指示を受けたため。",
+    "parentId": "6dbd06ff-c352-4044-a0a7-75a828101749",
+    "relatedIds": [
+      "34a3ee9b-bc6e-4fb2-a20d-65fcac8f7bfe"
+    ]
+  },
+  {
+    "id": "1c3af5cb-1f66-4deb-a6cb-7c4519746537",
+    "timestamp": "2025-04-01T00:58:29.347Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "LangChain.jsでのGemini JSON出力方法に関する調査結果を記録",
+    "details": {
+      "tool_used": "perplexity-server.get_documentation",
+      "query": "LangChain.js Gemini JSON output",
+      "findings": {
+        "output_parsers": "Available (e.g., JsonOutputFunctionsParser, StructuredOutputParser, JsonOutputParser) for parsing and validating JSON.",
+        "function_calling": "Supported via `.bindTools()` for structured interaction with external tools/APIs.",
+        "streaming": "Supported for incremental JSON parsing.",
+        "error_handling": "Mechanisms like OutputFixingParser exist for handling malformed JSON."
+      },
+      "sources": [
+        "https://js.langchain.com/docs/how_to/structured_output",
+        "https://js.langchain.com/docs/how_to/tool_calling",
+        "https://ai.google.dev/gemini-api/docs/structured-output"
+      ]
+    },
+    "intention": "LangChain.jsにおけるGemini JSON出力のハンドリング方法に関する調査結果を記録する。",
+    "context": "LangChain.jsの関連機能（Output Parsers, Function Calling）に関する調査が完了したため。",
+    "parentId": "6dbd06ff-c352-4044-a0a7-75a828101749",
+    "relatedIds": [
+      "34a3ee9b-bc6e-4fb2-a20d-65fcac8f7bfe",
+      "07a92d48-7ac6-42ef-a4e5-f1c9804b788d"
+    ]
+  },
+  {
+    "id": "91847b51-8131-4002-89e3-28bcf8b220c3",
+    "timestamp": "2025-04-01T01:01:04.787Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "プロンプトエンジニアリングによるGemini JSON出力のベストプラクティスに関する調査結果を記録",
+    "details": {
+      "tool_used": "perplexity-server.search",
+      "query": "prompt engineering techniques for Gemini JSON output best practices",
+      "findings": {
+        "prompt_instructions": "Clearly instruct the model to output JSON, potentially providing the desired schema or format within the prompt.",
+        "few_shot_examples": "Provide examples of input and expected JSON output to guide the model.",
+        "schema_combination": "Combining prompt instructions/examples with Gemini's native `response_schema` feature increases reliability.",
+        "best_practices": [
+          "Use `propertyOrdering` for consistent key order.",
+          "Set lower `temperature` (e.g., <= 0.3) for better schema compliance.",
+          "Keep schemas concise to manage token limits."
+        ],
+        "pitfalls": "Potential issues include markdown wrapping around JSON, inconsistent property ordering if not specified, and the model hallucinating fields outside the schema. Post-processing might be needed."
+      },
+      "sources": [
+        "Google AI Gemini API Documentation",
+        "Vellum AI Blog",
+        "Community discussions (GitHub issues, etc.)"
+      ]
+    },
+    "intention": "プロンプトエンジニアリングを用いたGemini JSON出力の最適化に関する調査結果を記録する。",
+    "context": "プロンプトエンジニアリングに関する調査が完了したため。",
+    "parentId": "6dbd06ff-c352-4044-a0a7-75a828101749",
+    "relatedIds": [
+      "34a3ee9b-bc6e-4fb2-a20d-65fcac8f7bfe",
+      "07a92d48-7ac6-42ef-a4e5-f1c9804b788d",
+      "1c3af5cb-1f66-4deb-a6cb-7c4519746537"
+    ]
+  }
+]

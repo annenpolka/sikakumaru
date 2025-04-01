@@ -1,0 +1,32 @@
+[
+  {
+    "id": "375e0edc-612f-4d5d-9802-c06dd06881e2",
+    "timestamp": "2025-04-01T01:01:57.298Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Gemini JSON出力方法の調査タスクをaskモードに委任",
+    "details": {
+      "delegated_mode": "ask",
+      "task_description": "Gemini APIやLangChain(Deno)でのJSON出力方法、プロンプトエンジニアリングについて調査するサブタスク。",
+      "reasoning": "技術調査にはperplexity-serverを持つaskモードが最適と判断したため。"
+    },
+    "intention": "Gemini出力をJSON形式にするための実現方法を特定する",
+    "context": "ユーザーからの要求を受け、現状把握(git status, log search)の後、タスクを分解し最初のステップとして調査を委任した。"
+  },
+  {
+    "id": "cd4d4f7b-afc1-468a-8779-89f265723af6",
+    "timestamp": "2025-04-01T01:15:22.104Z",
+    "type": "decision_made",
+    "level": "info",
+    "summary": "Gemini JSON出力機能の実装タスクをcodeモードに委任",
+    "details": {
+      "delegated_mode": "code",
+      "task_description": "調査結果に基づき、Gemini API呼び出しを修正し、JSON出力を実装するサブタスク。",
+      "reasoning": "コード変更にはcodeモードが最適と判断したため。",
+      "related_task_id": "375e0edc-612f-4d5d-9802-c06dd06881e2"
+    },
+    "intention": "調査結果を具体的なコード変更に反映させる",
+    "context": "askモードによる調査完了報告を受け、次のステップとして実装タスクをcodeモードに委任した。",
+    "parentId": "375e0edc-612f-4d5d-9802-c06dd06881e2"
+  }
+]

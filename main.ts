@@ -1,9 +1,9 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { load } from "@std/dotenv";
 import { defineCommand } from "./src/cli.ts";
-import { callLLM } from "./src/llm.ts";
+import { callLLMForJson } from "./src/llm.ts";
 import { generatePrompt } from "./src/prompt.ts";
-import { type CLIOptions } from "./src/types.ts";
+import { type CLIOptions, type ExamQuestionSet } from "./src/types.ts";
 
 /**
  * メインロジックを実行する非同期関数。
@@ -48,10 +48,13 @@ export async function runMainLogic(args: string[]): Promise<void> {
 
     // 4. LLM 呼び出し
     console.log("\nCalling LLM...");
-    const llmResponse = await callLLM(llm, prompt);
+    const examQuestionSet: ExamQuestionSet = await callLLMForJson(llm, prompt);
 
     // 5. 結果出力
-    console.log("\nLLM Response:\n", llmResponse);
+    console.log(
+      "\nLLM Response (JSON):\n",
+      JSON.stringify(examQuestionSet, null, 2),
+    );
 
     // TODO: 必要であれば結果をファイルに書き出す処理などを追加
     // 例: if (options.output) { await Deno.writeTextFile(options.output, llmResponse); }

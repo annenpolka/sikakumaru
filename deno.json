@@ -14,6 +14,7 @@
     "@std/testing/snapshot": "jsr:@std/testing@^0.224.0/snapshot",
     "@std/dotenv": "jsr:@std/dotenv@^0.224.0",
     "@std/path": "jsr:@std/path@^0.225.0",
-    "eta": "jsr:@eta-dev/eta@^3.5.0"
+    "eta": "jsr:@eta-dev/eta@^3.5.0",
+    "zod": "npm:zod@^3.23.8"
   }
 }
